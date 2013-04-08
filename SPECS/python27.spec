@@ -132,8 +132,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.3
-Release: 19.ius%{?dist}
+Version: 2.7.4
+Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2001,6 +2001,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 08 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-1.ius
+- latest sources for 2.7.4
+
 * Wed Feb 06 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.3-19.ius
 - skip test_gdb for RHEL 6
 - RHSA-2012:0731-1 shows the bug in CVE-2012-0876 has been pathced.  
