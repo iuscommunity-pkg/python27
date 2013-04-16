@@ -67,7 +67,7 @@ diff -up Python-2.7.2/Lib/hashlib.py.hashlib-fips Python-2.7.2/Lib/hashlib.py
 -    except ImportError:
 -        pass  # no extension module, this hash is unsupported.
 -
--    raise ValueError('unsupported hash type %s' % name)
+-    raise ValueError('unsupported hash type ' + name)
 -
 -
  def __get_openssl_constructor(name):
@@ -199,9 +199,9 @@ diff -up Python-2.7.2/Lib/test/test_hashlib.py.hashlib-fips Python-2.7.2/Lib/tes
              c.hexdigest()
  
      def test_algorithms_attribute(self):
-@@ -115,27 +113,9 @@ class HashLibTestCase(unittest.TestCase)
-         else:
-             self.assertTrue(0 == "hashlib didn't reject bogus hash name")
+@@ -115,28 +113,9 @@ class HashLibTestCase(unittest.TestCase)
+         self.assertRaises(ValueError, hashlib.new, 'spam spam spam spam spam')
+         self.assertRaises(TypeError, hashlib.new, 1)
  
 -    def test_get_builtin_constructor(self):
 -        get_builtin_constructor = hashlib.__dict__[
@@ -220,6 +220,7 @@ diff -up Python-2.7.2/Lib/test/test_hashlib.py.hashlib-fips Python-2.7.2/Lib/tes
 -                sys.modules['_md5'] = _md5
 -            else:
 -                del sys.modules['_md5']
+-        self.assertRaises(TypeError, get_builtin_constructor, 3)
 -
      def test_hexdigest(self):
          for name in self.supported_hash_names:
@@ -366,7 +367,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +} EVPCachedInfo;
  
 -#define DEFINE_CONSTS_FOR_NEW(Name)  \
--    static PyObject *CONST_ ## Name ## _name_obj; \
+-    static PyObject *CONST_ ## Name ## _name_obj = NULL; \
 -    static EVP_MD_CTX CONST_new_ ## Name ## _ctx; \
 -    static EVP_MD_CTX *CONST_new_ ## Name ## _ctx_p = NULL;
 +#define DEFINE_CONSTS_FOR_NEW(Name) \
@@ -513,7 +514,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
          return NULL;
      }
  
-@@ -484,55 +556,118 @@ EVP_new(PyObject *self, PyObject *args,
+@@ -484,58 +556,118 @@ EVP_new(PyObject *self, PyObject *args,
      digest = EVP_get_digestbyname(name);
  
      ret_obj = EVPnew(name_obj, digest, NULL, (unsigned char*)view.buf,
@@ -615,12 +616,15 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
                    " hash object; optionally initialized with a string") \
      }
  
--/* used in the init function to setup a constructor */
+-/* used in the init function to setup a constructor: initialize OpenSSL
+-   constructor constants if they haven't been initialized already.  */
 -#define INIT_CONSTRUCTOR_CONSTANTS(NAME)  do { \
+-    if (CONST_ ## NAME ## _name_obj == NULL) { \
 -    CONST_ ## NAME ## _name_obj = PyString_FromString(#NAME); \
--    if (EVP_get_digestbyname(#NAME)) { \
--        CONST_new_ ## NAME ## _ctx_p = &CONST_new_ ## NAME ## _ctx; \
--        EVP_DigestInit(CONST_new_ ## NAME ## _ctx_p, EVP_get_digestbyname(#NAME)); \
+-        if (EVP_get_digestbyname(#NAME)) { \
+-            CONST_new_ ## NAME ## _ctx_p = &CONST_new_ ## NAME ## _ctx; \
+-            EVP_DigestInit(CONST_new_ ## NAME ## _ctx_p, EVP_get_digestbyname(#NAME)); \
+-        } \
 -    } \
 +/*
 +  Macro/function pair to set up the constructors.

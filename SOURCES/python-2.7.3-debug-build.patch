@@ -1,6 +1,6 @@
-diff -up Python-2.7.3/configure.in.debug-build Python-2.7.3/configure.in
---- Python-2.7.3/configure.in.debug-build	2012-04-18 19:46:22.066498521 -0400
-+++ Python-2.7.3/configure.in	2012-04-18 19:46:22.078498372 -0400
+diff -up Python-2.7.3/configure.ac.debug-build Python-2.7.3/configure.ac
+--- Python-2.7.3/configure.ac.debug-build	2012-04-18 19:46:22.066498521 -0400
++++ Python-2.7.3/configure.ac	2012-04-18 19:46:22.078498372 -0400
 @@ -635,7 +635,7 @@ AC_SUBST(LIBRARY)
  AC_MSG_CHECKING(LIBRARY)
  if test -z "$LIBRARY"
@@ -75,7 +75,7 @@ diff -up Python-2.7.3/Lib/distutils/sysconfig.py.debug-build Python-2.7.3/Lib/di
      elif os.name == "os2":
 @@ -250,7 +251,7 @@ def get_makefile_filename():
      if python_build:
-         return os.path.join(os.path.dirname(sys.executable), "Makefile")
+         return os.path.join(project_base, "Makefile")
      lib_dir = get_python_lib(plat_specific=1, standard_lib=1)
 -    return os.path.join(lib_dir, "config", "Makefile")
 +    return os.path.join(lib_dir, "config" + (sys.pydebug and "-debug" or ""), "Makefile")
@@ -132,11 +132,11 @@ diff -up Python-2.7.3/Makefile.pre.in.debug-build Python-2.7.3/Makefile.pre.in
 +PYTHON=		python$(DEBUG_SUFFIX)$(EXE)
 +BUILDPYTHON=	python$(DEBUG_SUFFIX)$(BUILDEXE)
  
- # The task to run while instrument when building the profile-opt target
- PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+ PYTHON_FOR_BUILD=@PYTHON_FOR_BUILD@
+ _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
 @@ -413,7 +419,7 @@ sharedmods: $(BUILDPYTHON)
- 	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
- 	esac
+ 	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
+ 		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
  
 -libpython$(VERSION).so: $(LIBRARY_OBJS)
 +libpython$(VERSION)$(DEBUG_EXT).so: $(LIBRARY_OBJS)
@@ -183,7 +183,7 @@ diff -up Python-2.7.3/Makefile.pre.in.debug-build Python-2.7.3/Makefile.pre.in
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
 @@ -970,10 +976,11 @@ $(srcdir)/Lib/$(PLATDIR):
- 	export EXE; EXE="$(BUILDEXE)"; \
+ 	fi; \
  	cd $(srcdir)/Lib/$(PLATDIR); $(RUNSHARED) ./regen
  
 -python-config: $(srcdir)/Misc/python-config.in

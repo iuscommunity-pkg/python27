@@ -1,6 +1,5 @@
-diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dist
---- Python-2.7.1/Modules/Setup.dist.rhconfig	2010-08-21 07:40:30.000000000 -0400
-+++ Python-2.7.1/Modules/Setup.dist	2010-12-23 15:47:12.111059967 -0500
+--- Python-2.7.4/Modules/Setup.dist.rhconfig	2013-04-06 16:02:34.000000000 +0200
++++ Python-2.7.4/Modules/Setup.dist	2013-04-08 10:05:16.369985654 +0200
 @@ -153,7 +153,7 @@ GLHACK=-Dclear=__GLclear
  # modules are to be built as shared libraries (see above for more
  # detail; also note that *static* reverses this effect):
@@ -10,7 +9,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  # GNU readline.  Unlike previous Python incarnations, GNU readline is
  # now incorporated in an optional module, configured in the Setup file
-@@ -163,73 +163,73 @@ GLHACK=-Dclear=__GLclear
+@@ -163,74 +163,74 @@ GLHACK=-Dclear=__GLclear
  # it, depending on your system -- see the GNU readline instructions.
  # It's okay for this to be a shared library, too.
  
@@ -29,9 +28,6 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
 -#_testcapi _testcapimodule.c    # Python C API test module
 -#_random _randommodule.c	# Random number generator
 -#_collections _collectionsmodule.c # Container types
--#itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
--#strop stropmodule.c		# String manipulations
--#_functools _functoolsmodule.c	# Tools for working with functions and callable objects
 +array arraymodule.c	# array objects
 +cmath cmathmodule.c _math.c # -lm # complex math library functions
 +math mathmodule.c _math.c # -lm # math library functions, e.g. sin()
@@ -41,6 +37,10 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
 +_testcapi _testcapimodule.c    # Python C API test module
 +_random _randommodule.c	# Random number generator
 +_collections _collectionsmodule.c # Container types
+ #_heapq _heapqmodule.c		# Heapq type
+-#itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
+-#strop stropmodule.c		# String manipulations
+-#_functools _functoolsmodule.c	# Tools for working with functions and callable objects
 +itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
 +strop stropmodule.c		# String manipulations
 +_functools _functoolsmodule.c	# Tools for working with functions and callable objects
@@ -81,7 +81,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  # Socket module helper for socket(2)
 -#_socket socketmodule.c
-+_socket socketmodule.c
++_socket socketmodule.c timemodule.c
  
  # Socket module helper for SSL support; you must comment out the other
  # socket line above, and possibly edit the SSL variable:
@@ -99,7 +99,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  # First, look at Setup.config; configure may have set this for you.
  
 -#crypt cryptmodule.c # -lcrypt	# crypt(3); needs -lcrypt on some systems
-+crypt cryptmodule.c -lcrypt	# crypt(3); needs -lcrypt on some systems
++crypt cryptmodule.c # -lcrypt	# crypt(3); needs -lcrypt on some systems
  
  
  # Some more UNIX dependent modules -- off by default, since these
@@ -114,7 +114,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # Multimedia modules -- off by default.
-@@ -237,8 +237,8 @@ GLHACK=-Dclear=__GLclear
+@@ -238,8 +238,8 @@ GLHACK=-Dclear=__GLclear
  # #993173 says audioop works on 64-bit platforms, though.
  # These represent audio samples or images as strings:
  
@@ -125,7 +125,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # Note that the _md5 and _sha modules are normally only built if the
-@@ -248,14 +248,14 @@ GLHACK=-Dclear=__GLclear
+@@ -249,14 +249,14 @@ GLHACK=-Dclear=__GLclear
  # Message-Digest Algorithm, described in RFC 1321.  The necessary files
  # md5.c and md5.h are included here.
  
@@ -144,7 +144,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # SGI IRIX specific modules -- off by default.
-@@ -302,12 +302,12 @@ GLHACK=-Dclear=__GLclear
+@@ -303,12 +303,12 @@ GLHACK=-Dclear=__GLclear
  # A Linux specific module -- off by default; this may also work on 
  # some *BSDs.
  
@@ -159,7 +159,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # The _tkinter module.
-@@ -322,7 +322,7 @@ GLHACK=-Dclear=__GLclear
+@@ -323,7 +323,7 @@ GLHACK=-Dclear=__GLclear
  # every system.
  
  # *** Always uncomment this (leave the leading underscore in!):
@@ -168,7 +168,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  # *** Uncomment and edit to reflect where your Tcl/Tk libraries are:
  #	-L/usr/local/lib \
  # *** Uncomment and edit to reflect where your Tcl/Tk headers are:
-@@ -332,7 +332,7 @@ GLHACK=-Dclear=__GLclear
+@@ -333,7 +333,7 @@ GLHACK=-Dclear=__GLclear
  # *** Or uncomment this for Solaris:
  #	-I/usr/openwin/include \
  # *** Uncomment and edit for Tix extension only:
@@ -177,7 +177,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  # *** Uncomment and edit for BLT extension only:
  #	-DWITH_BLT -I/usr/local/blt/blt8.0-unoff/include -lBLT8.0 \
  # *** Uncomment and edit for PIL (TkImaging) extension only:
-@@ -341,7 +341,7 @@ GLHACK=-Dclear=__GLclear
+@@ -342,7 +342,7 @@ GLHACK=-Dclear=__GLclear
  # *** Uncomment and edit for TOGL extension only:
  #	-DWITH_TOGL togl.c \
  # *** Uncomment and edit to reflect your Tcl/Tk versions:
@@ -186,7 +186,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  # *** Uncomment and edit to reflect where your X11 libraries are:
  #	-L/usr/X11R6/lib \
  # *** Or uncomment this for Solaris:
-@@ -351,7 +351,7 @@ GLHACK=-Dclear=__GLclear
+@@ -352,7 +352,7 @@ GLHACK=-Dclear=__GLclear
  # *** Uncomment for AIX:
  #	-lld \
  # *** Always uncomment this; X11 libraries to link with:
@@ -195,7 +195,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  # Lance Ellinghaus's syslog module
  #syslog syslogmodule.c		# syslog daemon interface
-@@ -373,7 +373,7 @@ GLHACK=-Dclear=__GLclear
+@@ -374,7 +374,7 @@ GLHACK=-Dclear=__GLclear
  # it is a highly experimental and dangerous device for calling
  # *arbitrary* C functions in *arbitrary* shared libraries:
  
@@ -204,7 +204,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # Modules that provide persistent dictionary-like semantics.  You will
-@@ -396,7 +396,7 @@ GLHACK=-Dclear=__GLclear
+@@ -397,7 +397,7 @@ GLHACK=-Dclear=__GLclear
  #
  # First, look at Setup.config; configure may have set this for you.
  
@@ -213,7 +213,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # Sleepycat Berkeley DB interface.
-@@ -411,11 +411,10 @@ GLHACK=-Dclear=__GLclear
+@@ -412,11 +412,10 @@ GLHACK=-Dclear=__GLclear
  #
  # Edit the variables DB and DBLIBVERto point to the db top directory
  # and the subdirectory of PORT where you built it.
@@ -229,7 +229,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  # Historical Berkeley DB 1.85
  #
-@@ -430,14 +429,14 @@ GLHACK=-Dclear=__GLclear
+@@ -431,14 +430,14 @@ GLHACK=-Dclear=__GLclear
  
  
  # Helper module for various ascii-encoders
@@ -248,7 +248,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  
  # Lee Busby's SIGFPE modules.
-@@ -460,7 +459,7 @@ GLHACK=-Dclear=__GLclear
+@@ -461,7 +460,7 @@ GLHACK=-Dclear=__GLclear
  # Andrew Kuchling's zlib module.
  # This require zlib 1.1.3 (or later).
  # See http://www.gzip.org/zlib/
@@ -257,7 +257,7 @@ diff -up Python-2.7.1/Modules/Setup.dist.rhconfig Python-2.7.1/Modules/Setup.dis
  
  # Interface to the Expat XML parser
  #
-@@ -479,14 +478,14 @@ GLHACK=-Dclear=__GLclear
+@@ -480,14 +479,14 @@ GLHACK=-Dclear=__GLclear
  # Hye-Shik Chang's CJKCodecs
  
  # multibytecodec is required for all the other CJK codec modules

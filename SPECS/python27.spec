@@ -749,7 +749,7 @@ Patch157: 00157-uid-gid-overflows.patch
 # when packaging next upstream release.
 # The fix for Fedora specific "implement_specific_EVP_new()" function
 # has been merged into patch 00146.
-Patch158: 00158-fix-hashlib-leak.patch
+#Patch158: 00158-fix-hashlib-leak.patch
 
 # 00159 #
 # From F18 on, there is a libdb4 package, that replaces db4. It places header
@@ -799,13 +799,16 @@ Patch159: 00159-correct-libdb-include-path.patch
 
 # Bug while trying to compile with sqlite3 support
 # http://bugs.python.org/issue14572
-Patch164: 00164-sqlite3_int64.patch
+#Patch164: 00164-sqlite3_int64.patch
 
 # Skip failing test_gdb on RHEL 6
 Patch200: 00200-disable-tests-in-test_gdb.patch
 
 #Skip failing test_locale on RHEL 6.0 and 6.1
 Patch201: 00201-disable-tests-in-test_locale.patch 
+
+#fix for test_missing_localfile see http://bugs.python.org/issue16450
+Patch202: 00202-fix-for-test_missing_localfile.patch
 
 # This is the generated patch to "configure"; see the description of
 #   %{regenerate_autotooling_patch}
@@ -1069,6 +1072,7 @@ done
 %patch201 -p1
 %endif
 
+%patch202 -p1
 %if 0%{?with_systemtap}
 %patch55 -p1 -b .systemtap
 %endif
@@ -1127,13 +1131,13 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
-%patch158 -p1
+#%patch158 -p1
 %patch159 -p1 -F 3
 # 00160: not for python 2
 # 00161: not for python 2 yet
 # 00162: not for python 2 yet
 # 00163: not for python 2 yet
-%patch164 -p1
+#%patch164 -p1
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -1703,7 +1707,9 @@ rm -fr %{buildroot}
 %{dynload_dir}/_multiprocessing.so
 %{dynload_dir}/_randommodule.so
 %{dynload_dir}/_socketmodule.so
+%if 0%{?rhel} >= 6
 %{dynload_dir}/_sqlite3.so
+ %endif 
 %{dynload_dir}/_ssl.so
 %{dynload_dir}/_struct.so
 %{dynload_dir}/arraymodule.so
@@ -1904,7 +1910,9 @@ rm -fr %{buildroot}
 %{dynload_dir}/_multiprocessing_d.so
 %{dynload_dir}/_randommodule_d.so
 %{dynload_dir}/_socketmodule_d.so
+ %if 0%{?rhel} >= 6 
 %{dynload_dir}/_sqlite3_d.so
+%endif
 %{dynload_dir}/_ssl_d.so
 %{dynload_dir}/_struct_d.so
 %{dynload_dir}/arraymodule_d.so
@@ -2003,6 +2011,11 @@ rm -fr %{buildroot}
 %changelog
 * Mon Apr 08 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-1.ius
 - latest sources for 2.7.4
+- updated Patch55, Patch131, Patch134, Patch146, Patch157, Patch5000, Patch7,
+  Patch16, Patch0, Patch112 from python-2.7.4-1.fc19.src.rpm
+- added Patch202
+- disabled Patch158 and Patch164
+- update sqlite3 files for RHEL 5
 
 * Wed Feb 06 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.3-19.ius
 - skip test_gdb for RHEL 6

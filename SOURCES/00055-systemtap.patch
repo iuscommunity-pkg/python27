@@ -1,6 +1,6 @@
-diff -up Python-2.7rc1/configure.in.systemtap Python-2.7rc1/configure.in
---- Python-2.7rc1/configure.in.systemtap	2010-06-06 10:53:15.514975012 -0400
-+++ Python-2.7rc1/configure.in	2010-06-06 10:53:15.520974361 -0400
+diff -up Python-2.7rc1/configure.ac.systemtap Python-2.7rc1/configure.ac
+--- Python-2.7rc1/configure.ac.systemtap	2010-06-06 10:53:15.514975012 -0400
++++ Python-2.7rc1/configure.ac	2010-06-06 10:53:15.520974361 -0400
 @@ -2616,6 +2616,38 @@ if test "$with_valgrind" != no; then
      )
  fi
@@ -87,9 +87,9 @@ diff -up Python-2.7rc1/Makefile.pre.in.systemtap Python-2.7rc1/Makefile.pre.in
 @@ -1251,7 +1264,7 @@ Python/thread.o: @THREADHEADERS@
  .PHONY: frameworkinstall frameworkinstallframework frameworkinstallstructure
  .PHONY: frameworkinstallmaclib frameworkinstallapps frameworkinstallunixtools
- .PHONY: frameworkaltinstallunixtools recheck autoconf clean clobber distclean 
--.PHONY: smelly funny patchcheck
-+.PHONY: smelly funny patchcheck buildinclude
+ .PHONY: frameworkaltinstallunixtools recheck autoconf clean clobber distclean
+-.PHONY: smelly funny patchcheck touch altmaninstall
++.PHONY: smelly funny patchcheck touch altmaninstall buildinclude
  .PHONY: gdbhooks
  
  # IF YOU PUT ANYTHING HERE IT WILL GO AWAY

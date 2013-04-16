@@ -1,0 +1,13 @@
+--- Python-2.7.4/Lib/test/test_urllib.py	2013-04-06 09:02:33.000000000 -0500
++++ Python-2.7.4/Lib/test/test_urllib.py.patch	2013-04-15 13:56:06.152055209 -0500
+@@ -230,9 +230,9 @@
+         try:
+             self.assertTrue(os.path.exists(tmp_file))
+             fp = urllib.urlopen(tmp_fileurl)
++            fp.close()
+         finally:
+             os.close(fd)
+-            fp.close()
+         os.unlink(tmp_file)
+ 
+         self.assertFalse(os.path.exists(tmp_file))
