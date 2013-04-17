@@ -1468,6 +1468,10 @@ find %{buildroot}/ -name ".cvsignore"|xargs rm -f
 find %{buildroot}/ -name "*.bat"|xargs rm -f
 find . -name "*~"|xargs rm -f
 find . -name ".cvsignore"|xargs rm -f
+
+#conflicts with stock python
+rm -rf %{buildroot}%{_mandir}man1/python.1
+
 #zero length
 rm -f %{buildroot}%{pylibdir}/LICENSE.txt
 
@@ -2016,6 +2020,7 @@ rm -fr %{buildroot}
 - added Patch202
 - disabled Patch158 and Patch164
 - update sqlite3 files for RHEL 5
+- remove man1/python.1 as it conflicts with stock python 
 
 * Wed Feb 06 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.3-19.ius
 - skip test_gdb for RHEL 6
