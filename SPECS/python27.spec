@@ -133,7 +133,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.4
-Release: 1.ius%{?dist}
+Release: 2.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1470,7 +1470,7 @@ find . -name "*~"|xargs rm -f
 find . -name ".cvsignore"|xargs rm -f
 
 #conflicts with stock python
-rm -rf %{buildroot}%{_mandir}man1/python.1
+rm -rf %{buildroot}%{_mandir}/man1/python.1
 
 #zero length
 rm -f %{buildroot}%{pylibdir}/LICENSE.txt
@@ -2013,6 +2013,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Apr 18 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-2.ius
+- fixing typo with man1/python.1 removal
+
 * Mon Apr 08 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-1.ius
 - latest sources for 2.7.4
 - updated Patch55, Patch131, Patch134, Patch146, Patch157, Patch5000, Patch7,
