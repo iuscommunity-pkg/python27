@@ -133,7 +133,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.4
-Release: 2.ius%{?dist}
+Release: 3.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -796,10 +796,14 @@ Patch159: 00159-correct-libdb-include-path.patch
 # Hopefully this will make it easier to ensure that all relevant fixes are
 # applied to both versions.
 
-
+# patched in 2.7.4
 # Bug while trying to compile with sqlite3 support
 # http://bugs.python.org/issue14572
 #Patch164: 00164-sqlite3_int64.patch
+
+# more issues when trying to compile with sqlite3 support
+Patch165: 00165-sqlite3_int64.patch
+
 
 # Skip failing test_gdb on RHEL 6
 Patch200: 00200-disable-tests-in-test_gdb.patch
@@ -1138,6 +1142,7 @@ done
 # 00162: not for python 2 yet
 # 00163: not for python 2 yet
 #%patch164 -p1
+%patch165 -p1
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -1711,9 +1716,7 @@ rm -fr %{buildroot}
 %{dynload_dir}/_multiprocessing.so
 %{dynload_dir}/_randommodule.so
 %{dynload_dir}/_socketmodule.so
-%if 0%{?rhel} >= 6
 %{dynload_dir}/_sqlite3.so
- %endif 
 %{dynload_dir}/_ssl.so
 %{dynload_dir}/_struct.so
 %{dynload_dir}/arraymodule.so
@@ -1914,9 +1917,7 @@ rm -fr %{buildroot}
 %{dynload_dir}/_multiprocessing_d.so
 %{dynload_dir}/_randommodule_d.so
 %{dynload_dir}/_socketmodule_d.so
- %if 0%{?rhel} >= 6 
 %{dynload_dir}/_sqlite3_d.so
-%endif
 %{dynload_dir}/_ssl_d.so
 %{dynload_dir}/_struct_d.so
 %{dynload_dir}/arraymodule_d.so
@@ -2013,6 +2014,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Apr 26 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-3.ius
+- added Patch165
+- update sqlite3 files
+
 * Thu Apr 18 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-2.ius
 - fixing typo with man1/python.1 removal
 
