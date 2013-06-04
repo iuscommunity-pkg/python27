@@ -132,8 +132,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.4
-Release: 3.ius%{?dist}
+Version: 2.7.5
+Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -388,8 +388,8 @@ Patch16: python-2.6-rpath.patch
 Patch17: python-2.6.4-distutils-rpath.patch
 
 # Patch setup.py so that it links against db-4.8:
-Patch54: python-2.6.4-setup-db48.patch
-Patch541: python-2.6.4-setup-db43.patch
+#Patch54: python-2.6.4-setup-db48.patch
+#Patch541: python-2.6.4-setup-db43.patch
 
 # 00055 #
 # Systemtap support: add statically-defined probe points
@@ -411,7 +411,8 @@ Patch55: 00055-systemtap.patch
 # contained additional changes that applied fixes to the internals of the regex
 # module, but these appear to have all been applied as part of 
 #  http://bugs.python.org/issue931848
-Patch101: python-2.3.4-lib64-regex.patch
+# merged upstream
+#Patch101: python-2.3.4-lib64-regex.patch
 
 # Only used when "%{_lib}" == "lib64"
 # Fixup various paths throughout the build and in distutils from "lib" to "lib64",
@@ -533,7 +534,8 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 # ImportError: No module named _struct
 #
 # For now, revert this patch:
-Patch121: python-2.7rc2-r79310.patch
+#Patch121: python-2.7rc2-r79310.patch
+Patch121: 00121-add-Modules-to-build-path.patch 
 
 # 00125 #
 # COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
@@ -545,11 +547,13 @@ Patch125: 00125-less-verbose-COUNT_ALLOCS.patch
 
 # Fix dbm module on big-endian 64-bit
 # Sent upstream as http://bugs.python.org/issue9687 (rhbz#626756)
-Patch126: fix-dbm_contains-on-64bit-bigendian.patch
+# Patched upstream
+#Patch126: fix-dbm_contains-on-64bit-bigendian.patch
 
 # Fix test_structmember on big-endian 64-bit
 # Sent upstream as http://bugs.python.org/issue9960
-Patch127: fix-test_structmember-on-64bit-bigendian.patch
+# Patched upstream
+#Patch127: fix-test_structmember-on-64bit-bigendian.patch
 
 # 2.7.1 (in r84230) added a test to test_abc which fails if python is
 # configured with COUNT_ALLOCS, which is the case for our debug build
@@ -756,7 +760,7 @@ Patch157: 00157-uid-gid-overflows.patch
 # files in "/usr/include/libdb4", not in "/usr/include/db4", this patch
 # fixes this.
 # Downstream only modification.
-Patch159: 00159-correct-libdb-include-path.patch
+#Patch159: 00159-correct-libdb-include-path.patch
 
 # 00160 #
 # python3.spec's
@@ -812,7 +816,8 @@ Patch200: 00200-disable-tests-in-test_gdb.patch
 Patch201: 00201-disable-tests-in-test_locale.patch 
 
 #fix for test_missing_localfile see http://bugs.python.org/issue16450
-Patch202: 00202-fix-for-test_missing_localfile.patch
+# Patched upstream
+#Patch202: 00202-fix-for-test_missing_localfile.patch
 
 # This is the generated patch to "configure"; see the description of
 #   %{regenerate_autotooling_patch}
@@ -1049,7 +1054,7 @@ done
 # Try not disabling egg-infos, bz#414711
 #patch50 -p1 -b .egginfo
 
-%patch101 -p1 -b .lib64-regex
+#%patch101 -p1 -b .lib64-regex
 %if "%{_lib}" == "lib64"
 %patch102 -p1 -b .lib64
 %patch103 -p1 -b .lib64-sysconfig
@@ -1063,20 +1068,20 @@ done
 %patch16 -p1 -b .rpath
 %patch17 -p1 -b .distutils-rpath
 
-%if 0%{?fedora} >= 14
-%patch54 -p1 -b .setup-db48
-%endif
+#%if 0%{?fedora} >= 14
+#%patch54 -p1 -b .setup-db48
+#%endif
 
-%if 0%{?rhel} < 6
-%patch541 -p1 -b .setup-db43
-%endif
+#%if 0%{?rhel} < 6
+#%patch541 -p1 -b .setup-db43
+#%endif
 
 %if 0%{?rhel} >= 6
 %patch200 -p1
 %patch201 -p1
 %endif
 
-%patch202 -p1
+#%patch202 -p1
 %if 0%{?with_systemtap}
 %patch55 -p1 -b .systemtap
 %endif
@@ -1091,10 +1096,11 @@ done
 
 # patch115: upstream as of Python 2.7.3
 
-%patch121 -p0 -R
+#%patch121 -p0 -R
+%patch121 -p1
 %patch125 -p1 -b .less-verbose-COUNT_ALLOCS
-%patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
-%patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
+#%patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
+#%patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
 %patch128 -p1
 
 %patch130 -p1
@@ -1136,13 +1142,13 @@ done
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
 #%patch158 -p1
-%patch159 -p1 -F 3
+#%patch159 -p1 -F 3
 # 00160: not for python 2
 # 00161: not for python 2 yet
 # 00162: not for python 2 yet
 # 00163: not for python 2 yet
 #%patch164 -p1
-%patch165 -p1
+#%patch165 -p1
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -2014,6 +2020,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jun 04 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.5-1.ius
+- latest sources for 2.7.5
+- updated Patch0, Patch102, Patch121, Patch153, Patch5000
+- disabled Patch54, Patch541, Patch126, Patch127, Patch101, Patch159, Patch202
+
 * Fri Apr 26 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.4-3.ius
 - added Patch165
 - update sqlite3 files

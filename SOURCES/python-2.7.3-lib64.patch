@@ -1,6 +1,6 @@
 diff -up Python-2.7.3/Lib/distutils/command/install.py.lib64 Python-2.7.3/Lib/distutils/command/install.py
 --- Python-2.7.3/Lib/distutils/command/install.py.lib64	2012-04-09 19:07:29.000000000 -0400
-+++ Python-2.7.3/Lib/distutils/command/install.py	2012-04-11 17:56:41.848587174 -0400
++++ Python-2.7.3/Lib/distutils/command/install.py	2013-02-19 13:58:20.446015129 -0500
 @@ -42,14 +42,14 @@ else:
  INSTALL_SCHEMES = {
      'unix_prefix': {
@@ -20,7 +20,7 @@ diff -up Python-2.7.3/Lib/distutils/command/install.py.lib64 Python-2.7.3/Lib/di
          'data'   : '$base',
 diff -up Python-2.7.3/Lib/distutils/sysconfig.py.lib64 Python-2.7.3/Lib/distutils/sysconfig.py
 --- Python-2.7.3/Lib/distutils/sysconfig.py.lib64	2012-04-09 19:07:29.000000000 -0400
-+++ Python-2.7.3/Lib/distutils/sysconfig.py	2012-04-11 17:56:41.849587162 -0400
++++ Python-2.7.3/Lib/distutils/sysconfig.py	2013-02-19 13:58:20.446015129 -0500
 @@ -114,8 +114,12 @@ def get_python_lib(plat_specific=0, stan
          prefix = plat_specific and EXEC_PREFIX or PREFIX
  
@@ -37,7 +37,7 @@ diff -up Python-2.7.3/Lib/distutils/sysconfig.py.lib64 Python-2.7.3/Lib/distutil
          else:
 diff -up Python-2.7.3/Lib/site.py.lib64 Python-2.7.3/Lib/site.py
 --- Python-2.7.3/Lib/site.py.lib64	2012-04-09 19:07:31.000000000 -0400
-+++ Python-2.7.3/Lib/site.py	2012-04-11 17:56:41.850587149 -0400
++++ Python-2.7.3/Lib/site.py	2013-02-19 13:58:20.447015128 -0500
 @@ -300,12 +300,16 @@ def getsitepackages():
          if sys.platform in ('os2emx', 'riscos'):
              sitepackages.append(os.path.join(prefix, "Lib", "site-packages"))
@@ -57,7 +57,7 @@ diff -up Python-2.7.3/Lib/site.py.lib64 Python-2.7.3/Lib/site.py
              # for framework builds *only* we add the standard Apple
 diff -up Python-2.7.3/Lib/test/test_site.py.lib64 Python-2.7.3/Lib/test/test_site.py
 --- Python-2.7.3/Lib/test/test_site.py.lib64	2012-04-09 19:07:32.000000000 -0400
-+++ Python-2.7.3/Lib/test/test_site.py	2012-04-11 17:58:52.981947780 -0400
++++ Python-2.7.3/Lib/test/test_site.py	2013-02-19 13:58:20.447015128 -0500
 @@ -241,17 +241,20 @@ class HelperFunctionsTests(unittest.Test
              self.assertEqual(dirs[2], wanted)
          elif os.sep == '/':
@@ -84,8 +84,8 @@ diff -up Python-2.7.3/Lib/test/test_site.py.lib64 Python-2.7.3/Lib/test/test_sit
  
  class PthFile(object):
 diff -up Python-2.7.3/Makefile.pre.in.lib64 Python-2.7.3/Makefile.pre.in
---- Python-2.7.3/Makefile.pre.in.lib64	2012-04-11 17:56:41.829587411 -0400
-+++ Python-2.7.3/Makefile.pre.in	2012-04-11 17:56:41.852587123 -0400
+--- Python-2.7.3/Makefile.pre.in.lib64	2013-02-19 13:58:20.435015131 -0500
++++ Python-2.7.3/Makefile.pre.in	2013-02-19 13:58:20.447015128 -0500
 @@ -97,7 +97,7 @@ LIBDIR=		@libdir@
  MANDIR=		@mandir@
  INCLUDEDIR=	@includedir@
@@ -97,7 +97,7 @@ diff -up Python-2.7.3/Makefile.pre.in.lib64 Python-2.7.3/Makefile.pre.in
  BINLIBDEST=	$(LIBDIR)/python$(VERSION)
 diff -up Python-2.7.3/Modules/getpath.c.lib64 Python-2.7.3/Modules/getpath.c
 --- Python-2.7.3/Modules/getpath.c.lib64	2012-04-09 19:07:34.000000000 -0400
-+++ Python-2.7.3/Modules/getpath.c	2012-04-11 17:56:41.853587110 -0400
++++ Python-2.7.3/Modules/getpath.c	2013-02-19 13:58:20.448015128 -0500
 @@ -117,8 +117,8 @@
  #endif
  
@@ -137,15 +137,15 @@ diff -up Python-2.7.3/Modules/getpath.c.lib64 Python-2.7.3/Modules/getpath.c
      /* If we found EXEC_PREFIX do *not* reduce it!  (Yet.) */
  
 diff -up Python-2.7.3/Modules/Setup.dist.lib64 Python-2.7.3/Modules/Setup.dist
---- Python-2.7.3/Modules/Setup.dist.lib64	2012-04-11 17:56:41.820587523 -0400
-+++ Python-2.7.3/Modules/Setup.dist	2012-04-11 17:56:41.854587097 -0400
+--- Python-2.7.3/Modules/Setup.dist.lib64	2013-02-19 13:58:20.442015131 -0500
++++ Python-2.7.3/Modules/Setup.dist	2013-02-19 14:02:25.255998391 -0500
 @@ -413,7 +413,7 @@ gdbm gdbmmodule.c -lgdbm
+ # Edit the variables DB and DBLIBVERto point to the db top directory
  # and the subdirectory of PORT where you built it.
- DBLIBVER=4.7
- DBINC=/usr/include/db4
+ DBINC=/usr/include/libdb
 -DBLIB=/usr/lib
 +DBLIB=/usr/lib64
- _bsddb _bsddb.c -I$(DBINC) -L$(DBLIB) -ldb-$(DBLIBVER)
+ _bsddb _bsddb.c -I$(DBINC) -L$(DBLIB) -ldb
  
  # Historical Berkeley DB 1.85
 @@ -459,7 +459,7 @@ cPickle cPickle.c
@@ -159,7 +159,7 @@ diff -up Python-2.7.3/Modules/Setup.dist.lib64 Python-2.7.3/Modules/Setup.dist
  #
 diff -up Python-2.7.3/setup.py.lib64 Python-2.7.3/setup.py
 --- Python-2.7.3/setup.py.lib64	2012-04-09 19:07:36.000000000 -0400
-+++ Python-2.7.3/setup.py	2012-04-11 17:56:41.856587073 -0400
++++ Python-2.7.3/setup.py	2013-02-19 13:58:20.449015129 -0500
 @@ -369,7 +369,7 @@ class PyBuildExt(build_ext):
  
      def detect_modules(self):
@@ -167,8 +167,8 @@ diff -up Python-2.7.3/setup.py.lib64 Python-2.7.3/setup.py
 -        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
 +        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib64')
          add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+         self.add_gcc_paths()
          self.add_multiarch_paths()
- 
 @@ -677,11 +677,11 @@ class PyBuildExt(build_ext):
              elif curses_library:
                  readline_libs.append(curses_library)
