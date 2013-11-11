@@ -2022,6 +2022,7 @@ rm -fr %{buildroot}
 %changelog
 * Mon Nov 11 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.6-1.ius
 - Latest sources from upstream
+- updated Patch102 and Patch136
 
 * Tue Jun 04 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.5-1.ius
 - latest sources for 2.7.5
