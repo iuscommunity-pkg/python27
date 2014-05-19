@@ -133,7 +133,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 1.ius%{?dist}
+Release: 2.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2020,6 +2020,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon May 19 2014 Jeffrey Ness <jeffrey.ness@rackspace.com> - 2.7.6-2.ius
+- Resolve issue with crypt module and undefined symbol
+  https://bugs.launchpad.net/ius/+bug/1320912
+
 * Mon Nov 11 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.6-1.ius
 - Latest sources from upstream
 - updated Patch102 and Patch136
