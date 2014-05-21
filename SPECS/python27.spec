@@ -133,7 +133,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 2.ius%{?dist}
+Release: 3.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -808,6 +808,8 @@ Patch157: 00157-uid-gid-overflows.patch
 # more issues when trying to compile with sqlite3 support
 Patch165: 00165-sqlite3_int64.patch
 
+#Workaround for ENOPROTOOPT seen in Koji and other build systems withi test.support.bind_port()
+Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 
 # Skip failing test_gdb on RHEL 6
 Patch200: 00200-disable-tests-in-test_gdb.patch
@@ -1149,6 +1151,7 @@ done
 # 00163: not for python 2 yet
 #%patch164 -p1
 #%patch165 -p1
+%patch173 -p1
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -2020,6 +2023,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed May 21 2014 Ben Harper <ben.harper@rackspace.com> - 2.7.6-3.ius
+- add Patch173 from Fedora SRPM to address test stuie failures in build farm
+
 * Mon May 19 2014 Jeffrey Ness <jeffrey.ness@rackspace.com> - 2.7.6-2.ius
 - Resolve issue with crypt module and undefined symbol
   https://bugs.launchpad.net/ius/+bug/1320912
