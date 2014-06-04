@@ -1802,6 +1802,7 @@ rm -fr %{buildroot}
 %dir %{pylibdir}/json
 %{pylibdir}/json/*.py*
 %{pylibdir}/lib2to3
+%exclude %{pylibdir}/lib2to3/tests
 %{pylibdir}/logging
 %{pylibdir}/multiprocessing
 %{pylibdir}/plat-linux2
@@ -1878,6 +1879,7 @@ rm -fr %{buildroot}
 %{pylibdir}/distutils/tests
 %{pylibdir}/email/test
 %{pylibdir}/json/tests
+%{pylibdir}/lib2to3/tests
 %{pylibdir}/sqlite3/test
 %{pylibdir}/test/*
 # These two are shipped in the main subpackage:
