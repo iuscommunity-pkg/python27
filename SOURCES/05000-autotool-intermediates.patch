@@ -43,15 +43,6 @@ diff -up ./configure.autotool-intermediates ./configure
    --with-wctype-functions use wctype.h functions
    --with-fpectl           enable SIGFPE catching
    --with-libm=STRING      math library
-@@ -5171,7 +5181,7 @@ esac
- $as_echo_n "checking LIBRARY... " >&6; }
- if test -z "$LIBRARY"
- then
--	LIBRARY='libpython$(VERSION).a'
-+	LIBRARY='libpython$(VERSION)$(DEBUG_EXT).a'
- fi
- { $as_echo "$as_me:${as_lineno-$LINENO}: result: $LIBRARY" >&5
- $as_echo "$LIBRARY" >&6; }
 @@ -5343,8 +5353,8 @@ $as_echo "#define Py_ENABLE_SHARED 1" >>
  	  INSTSONAME="$LDLIBRARY".$SOVERSION
            ;;
@@ -60,7 +51,7 @@ diff -up ./configure.autotool-intermediates ./configure
 -	  BLDLIBRARY='-L. -lpython$(VERSION)'
 +	  LDLIBRARY='libpython$(VERSION)$(DEBUG_EXT).so'
 +	  BLDLIBRARY='-L. -lpython$(VERSION)$(DEBUG_EXT)'
- 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
+ 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
  	  case $ac_sys_system in
  	      FreeBSD*)
 @@ -5367,7 +5377,7 @@ $as_echo "#define Py_ENABLE_SHARED 1" >>
@@ -69,7 +60,7 @@ diff -up ./configure.autotool-intermediates ./configure
  	  LDLIBRARY='libpython$(VERSION).so'
 -	  BLDLIBRARY='-rpath $(LIBDIR) -L. -lpython$(VERSION)'
 +	  BLDLIBRARY='-L. -lpython$(VERSION)'
- 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
+ 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
  	  ;;
      atheos*)
 @@ -5894,6 +5904,14 @@ $as_echo "no" >&6; }

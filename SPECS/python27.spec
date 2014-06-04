@@ -2037,6 +2037,7 @@ rm -fr %{buildroot}
 - Correct upstream url
 - Move lib2to3/tests from python-libs to python-test
 - Fix bogus dates in changelog
+- Update Patch16, Patch112, Patch138, Patch147, Patch157, Patch173, Patch5000
 
 * Wed May 21 2014 Ben Harper <ben.harper@rackspace.com> - 2.7.6-3.ius
 - add Patch173 from Fedora SRPM to address test stuie failures in build farm

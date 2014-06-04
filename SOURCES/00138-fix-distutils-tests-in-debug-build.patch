@@ -65,4 +65,4 @@ diff -up Python-2.7.2/Lib/distutils/tests/test_build_ext.py.mark-tests-that-fail
 +        wanted = os.path.join(cmd.build_lib, 'UpdateManager', 'fdsend' + debug_ext + ext)
          self.assertEqual(ext_path, wanted)
  
-     def test_build_ext_path_cross_platform(self):
+     @unittest.skipUnless(sys.platform == 'win32', 'these tests require Windows')
