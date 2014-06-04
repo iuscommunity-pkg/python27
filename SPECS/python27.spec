@@ -787,26 +787,6 @@ Patch157: 00157-uid-gid-overflows.patch
 # python3.spec has:
 #  Patch163: 00163-disable-parts-of-test_socket-in-rpm-build.patch
 
-# (New patches go here ^^^)
-#
-# When adding new patches to "python" and "python3" in Fedora 17 onwards,
-# please try to keep the patch numbers in-sync between the two specfiles:
-#
-#   - use the same patch number across both specfiles for conceptually-equivalent
-#     fixes, ideally with the same name
-#
-#   - when a patch is relevant to both specfiles, use the same introductory
-#     comment in both specfiles where possible (to improve "diff" output when
-#     comparing them)
-#
-#   - when a patch is only relevant for one of the two specfiles, leave a gap
-#     in the patch numbering in the other specfile, adding a comment when
-#     omitting a patch, both in the manifest section here, and in the "prep"
-#     phase below
-#
-# Hopefully this will make it easier to ensure that all relevant fixes are
-# applied to both versions.
-
 # patched in 2.7.4
 # Bug while trying to compile with sqlite3 support
 # http://bugs.python.org/issue14572
@@ -827,6 +807,26 @@ Patch201: 00201-disable-tests-in-test_locale.patch
 #fix for test_missing_localfile see http://bugs.python.org/issue16450
 # Patched upstream
 #Patch202: 00202-fix-for-test_missing_localfile.patch
+
+# (New patches go here ^^^)
+#
+# When adding new patches to "python" and "python3" in Fedora 17 onwards,
+# please try to keep the patch numbers in-sync between the two specfiles:
+#
+#   - use the same patch number across both specfiles for conceptually-equivalent
+#     fixes, ideally with the same name
+#
+#   - when a patch is relevant to both specfiles, use the same introductory
+#     comment in both specfiles where possible (to improve "diff" output when
+#     comparing them)
+#
+#   - when a patch is only relevant for one of the two specfiles, leave a gap
+#     in the patch numbering in the other specfile, adding a comment when
+#     omitting a patch, both in the manifest section here, and in the "prep"
+#     phase below
+#
+# Hopefully this will make it easier to ensure that all relevant fixes are
+# applied to both versions.
 
 # This is the generated patch to "configure"; see the description of
 #   %{regenerate_autotooling_patch}
