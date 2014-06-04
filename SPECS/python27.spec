@@ -141,8 +141,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.6
-Release: 3.ius%{?dist}
+Version: 2.7.7
+Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2032,6 +2032,12 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jun 04 2014 Carl George <carl.george@rackspace.com> - 2.7.7-1.ius
+- Latest upstream source
+- Correct upstream url
+- Move lib2to3/tests from python-libs to python-test
+- Fix bogus dates in changelog
+
 * Wed May 21 2014 Ben Harper <ben.harper@rackspace.com> - 2.7.6-3.ius
 - add Patch173 from Fedora SRPM to address test stuie failures in build farm
 
