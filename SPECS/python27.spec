@@ -64,14 +64,23 @@
 # with an ABI version corresponding to the system python, rather than 2.7
 #
 # This can be checked with "hexdump -C".
-# A python 2.6 .pyo file should begin with:
-#     d1 f2 0d 0a
-# corresponding to MAGIC=62161 = 0xF2D1
+#
+# helper function:
+# py-magic-check(){ hexdump -C ${1} | awk 'NR==1{print $2,$3,$4,$5}'; }
+# py-magic-check /usr/lib64/python2.7/site.pyo
+#
+# results:
+# python2.4 > 6d f2 0d 0a
+# python2.6 > d1 f2 0d 0a
+# python2.7 > 03 f3 0d 0a
+# python3.1 > 4f 0c 0d 0a
+#
+# https://bugzilla.redhat.com/show_bug.cgi?id=531117
+# This was fixed by the time EL6 was released (rpm >= 4.7.1-8). Add the following
+# macro to fix the issue on EL5.
 # 
-# whereas a python 2.4 .pyo file should begin with:
-#     6d f2 0d 0a
-# corresponding to MAGIC=62061 = 0xF26D
-# FIXME: What about 2.7?
+# %global __os_install_post %{__python27_os_install_post}
+
 %global __os_install_post    \
     /usr/lib/rpm/redhat/brp-compress \
     %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}} \
