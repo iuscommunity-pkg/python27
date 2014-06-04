@@ -2989,10 +2989,10 @@ directories (bug 531901)
 * Mon Jun 9 2003 Elliot Lee <sopwith@redhat.com> 2.2.3-3
 - rebuilt
 
-* Wed Jun  7 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-2
+* Sat Jun  7 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-2
 - Rebuilt
 
-* Tue Jun  6 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-1
+* Fri Jun  6 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-1
 - Upgraded to 2.2.3
 
 * Wed Apr  2 2003 Mihai Ibanescu <misa@redhat.com> 2.2.2-28
