@@ -257,9 +257,9 @@ Source5: pyfuntop.stp
 #  __python2, python2_sitelib, python2_sitearch, python2_version
 #Source6: macros.python2
 
-# This defines a __python26_os_install_post macro, so that a specfile for a
+# This defines a __python27_os_install_post macro, so that a specfile for a
 # module should merely need to redefine __os_install_post to this in order to
-# be byte-compiled using python2.6
+# be byte-compiled using python2.7
 Source6: macros.python27
 
 
