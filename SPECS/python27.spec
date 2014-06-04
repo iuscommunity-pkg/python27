@@ -541,10 +541,8 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 #   File "/home/david/rpmbuild/BUILDROOT/python-2.7-0.1.rc2.fc14.x86_64/usr/lib64/python2.7/struct.py", line 1, in <module>
 #    from _struct import *
 # ImportError: No module named _struct
-#
-# For now, revert this patch:
-#Patch121: python-2.7rc2-r79310.patch
-Patch121: 00121-add-Modules-to-build-path.patch 
+# This patch adds the build Modules directory to build path.
+Patch121: 00121-add-Modules-to-build-path.patch
 
 # 00125 #
 # COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
