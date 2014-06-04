@@ -1905,7 +1905,6 @@ rm -fr %{buildroot}
 %{_bindir}/python2-debug
 %endif
 %{_bindir}/python%{pybasever}-debug
-%{_bindir}/python%{pybasever}-debug-config
 
 # Analog of the -libs subpackage's files, with debug builds of the built-in
 # "extension" modules:
@@ -1998,6 +1997,7 @@ rm -fr %{buildroot}
 %{_bindir}/python-debug-config
 %{_bindir}/python2-debug-config
 %endif
+%{_bindir}/python%{pybasever}-debug-config
 %{_libdir}/libpython%{pybasever}_d.so
 
 # Analog of the -tools subpackage's files:
