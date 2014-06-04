@@ -2016,7 +2016,7 @@ rm -fr %{buildroot}
 # We put the debug-gdb.py file inside /usr/lib/debug to avoid noise from
 # ldconfig (rhbz:562980).
 #
-# The /usr/lib/rpm/redhat/macros defines %__debug_package to use
+# The /usr/lib/rpm/redhat/macros defines the __debug_package macro to use
 # debugfiles.list, and it appears that everything below /usr/lib/debug and
 # (/usr/src/debug) gets added to this file (via LISTFILES) in
 # /usr/lib/rpm/find-debuginfo.sh
