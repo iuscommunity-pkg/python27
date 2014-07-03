@@ -339,19 +339,17 @@ diff -up Python-2.7.2/Lib/test/test_hashlib.py.hashlib-fips Python-2.7.2/Lib/tes
  def test_main():
      test_support.run_unittest(HashLibTestCase)
  
-diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_hashopenssl.c
---- Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips	2011-06-11 11:46:26.000000000 -0400
-+++ Python-2.7.2/Modules/_hashopenssl.c	2011-09-14 00:21:26.199252001 -0400
-@@ -36,6 +36,8 @@
- #endif
+--- Python-2.7.8/Modules/_hashopenssl.c	2014-06-29 21:05:41.000000000 -0500
++++ Python-2.7.8/Modules/_hashopenssl.c.updated	2014-07-03 16:07:38.120603949 -0500
+@@ -37,6 +37,7 @@
  
  /* EVP is the preferred interface to hashing in OpenSSL */
-+#include <openssl/ssl.h>
-+#include <openssl/err.h>
  #include <openssl/evp.h>
++#include <openssl/ssl.h>
+ #include <openssl/hmac.h>
+ #include <openssl/err.h>
  
- #define MUNCH_SIZE INT_MAX
-@@ -65,11 +67,19 @@ typedef struct {
+@@ -67,11 +68,19 @@
  
  static PyTypeObject EVPtype;
  
@@ -375,7 +373,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
  
  DEFINE_CONSTS_FOR_NEW(md5)
  DEFINE_CONSTS_FOR_NEW(sha1)
-@@ -115,6 +125,48 @@ EVP_hash(EVPobject *self, const void *vp
+@@ -117,6 +126,47 @@
      }
  }
  
@@ -420,11 +418,10 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +    PyErr_SetString(PyExc_ValueError, errstr);
 +}
 +
-+
  /* Internal methods for a hash object */
  
  static void
-@@ -313,14 +365,15 @@ EVP_repr(PyObject *self)
+@@ -315,14 +365,15 @@
  static int
  EVP_tp_init(EVPobject *self, PyObject *args, PyObject *kwds)
  {
@@ -443,11 +440,12 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
          return -1;
      }
  
-@@ -336,7 +389,12 @@ EVP_tp_init(EVPobject *self, PyObject *a
+@@ -338,7 +389,13 @@
          PyBuffer_Release(&view);
          return -1;
      }
 -    EVP_DigestInit(&self->ctx, digest);
++
 +    mc_ctx_init(&self->ctx, usedforsecurity);
 +    if (!EVP_DigestInit_ex(&self->ctx, digest, NULL)) {
 +        set_evp_exception();
@@ -457,7 +455,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
  
      self->name = name_obj;
      Py_INCREF(self->name);
-@@ -420,7 +478,8 @@ static PyTypeObject EVPtype = {
+@@ -422,7 +479,8 @@
  static PyObject *
  EVPnew(PyObject *name_obj,
         const EVP_MD *digest, const EVP_MD_CTX *initial_ctx,
@@ -467,7 +465,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
  {
      EVPobject *self;
  
-@@ -435,7 +494,12 @@ EVPnew(PyObject *name_obj,
+@@ -437,7 +495,12 @@
      if (initial_ctx) {
          EVP_MD_CTX_copy(&self->ctx, initial_ctx);
      } else {
@@ -481,7 +479,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
      }
  
      if (cp && len) {
-@@ -459,20 +523,28 @@ PyDoc_STRVAR(EVP_new__doc__,
+@@ -461,20 +524,28 @@
  An optional string argument may be provided and will be\n\
  automatically hashed.\n\
  \n\
@@ -514,7 +512,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
          return NULL;
      }
  
-@@ -484,58 +556,118 @@ EVP_new(PyObject *self, PyObject *args,
+@@ -487,7 +558,7 @@
      digest = EVP_get_digestbyname(name);
  
      ret_obj = EVPnew(name_obj, digest, NULL, (unsigned char*)view.buf,
@@ -523,7 +521,8 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
      PyBuffer_Release(&view);
  
      return ret_obj;
- }
+@@ -713,51 +784,113 @@
+ #endif
  
  /*
 - *  This macro generates constructor function definitions for specific
@@ -558,8 +557,8 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +        return implement_specific_EVP_new(self, args, kwdict,      \
 +                                          "|s*i:" #NAME,           \
 +                                          &cached_info_ ## NAME ); \
-     }
- 
++    }
++
 +static PyObject *
 +implement_specific_EVP_new(PyObject *self, PyObject *args, PyObject *kwdict,
 +                           const char *format,
@@ -576,8 +575,8 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +    if (!PyArg_ParseTupleAndKeywords(args, kwdict, format, kwlist,
 +                                     &view, &usedforsecurity)) {
 +        return NULL;
-+    }
-+
+     }
+ 
 +    idx = usedforsecurity ? 1 : 0;
 +
 +    /*
@@ -606,6 +605,7 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +
 +    return ret_obj;
 +}
++
 +
  /* a PyMethodDef structure for the constructor */
  #define CONSTRUCTOR_METH_DEF(NAME)  \
@@ -661,10 +661,11 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
 +    }
 +}
 +
++
  GEN_CONSTRUCTOR(md5)
  GEN_CONSTRUCTOR(sha1)
  #ifdef _OPENSSL_SUPPORTS_SHA2
-@@ -565,13 +700,10 @@ init_hashlib(void)
+@@ -794,13 +927,10 @@
  {
      PyObject *m;
  
@@ -681,9 +682,9 @@ diff -up Python-2.7.2/Modules/_hashopenssl.c.hashlib-fips Python-2.7.2/Modules/_
      if (PyType_Ready(&EVPtype) < 0)
          return;
 diff -up Python-2.7.2/Modules/Setup.dist.hashlib-fips Python-2.7.2/Modules/Setup.dist
---- Python-2.7.2/Modules/Setup.dist.hashlib-fips	2011-09-14 00:21:26.163252001 -0400
-+++ Python-2.7.2/Modules/Setup.dist	2011-09-14 00:21:26.201252001 -0400
-@@ -248,14 +248,14 @@ imageop imageop.c	# Operations on images
+--- Python-2.7.2/Modules/Setup.dist.hashlib-fips        2011-09-14 00:21:26.163252001 -0400
++++ Python-2.7.2/Modules/Setup.dist     2011-09-14 00:21:26.201252001 -0400
+@@ -248,14 +248,14 @@ imageop imageop.c # Operations on images
  # Message-Digest Algorithm, described in RFC 1321.  The necessary files
  # md5.c and md5.h are included here.
  
@@ -703,8 +704,8 @@ diff -up Python-2.7.2/Modules/Setup.dist.hashlib-fips Python-2.7.2/Modules/Setup
  
  # SGI IRIX specific modules -- off by default.
 diff -up Python-2.7.2/setup.py.hashlib-fips Python-2.7.2/setup.py
---- Python-2.7.2/setup.py.hashlib-fips	2011-09-14 00:21:25.722252001 -0400
-+++ Python-2.7.2/setup.py	2011-09-14 00:21:26.203252001 -0400
+--- Python-2.7.2/setup.py.hashlib-fips  2011-09-14 00:21:25.722252001 -0400
++++ Python-2.7.2/setup.py       2011-09-14 00:21:26.203252001 -0400
 @@ -768,21 +768,6 @@ class PyBuildExt(build_ext):
                  print ("warning: openssl 0x%08x is too old for _hashlib" %
                         openssl_ver)
