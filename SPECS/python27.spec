@@ -2034,7 +2034,7 @@ rm -fr %{buildroot}
 %changelog
 * Thu Dec 11 2014 Carl George <carl.george@rackspace.com> - 2.7.9-1.ius
 - Latest upstream source
-- Refresh patch55, patch112, patch146
+- Refresh patches 55, 112, 146, 156
 
 * Thu Jul 03 2014 Ben Harper <ben.harper@rackspace.com> -  2.7.8-1.ius
 - Latest upstream source
