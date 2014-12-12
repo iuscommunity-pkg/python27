@@ -1841,6 +1841,10 @@ rm -fr %{buildroot}
 %doc systemtap-example.stp pyfuntop.stp
 %endif
 
+%dir %{pylibdir}/ensurepip/
+%{pylibdir}/ensurepip/*.py*
+%exclude %{pylibdir}/ensurepip/_bundled
+
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
