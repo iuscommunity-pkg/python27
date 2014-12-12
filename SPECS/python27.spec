@@ -808,6 +808,9 @@ Patch201: 00201-disable-tests-in-test_locale.patch
 # Patched upstream
 #Patch202: 00202-fix-for-test_missing_localfile.patch
 
+# readline in el6 is too old
+Patch203: 00203-skip-test-readline.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1159,6 +1162,10 @@ done
 #%patch164 -p1
 #%patch165 -p1
 %patch173 -p1
+
+%if 0%{?rhel} <= 6
+%patch203 -p1
+%endif
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -2035,6 +2042,7 @@ rm -fr %{buildroot}
 * Thu Dec 11 2014 Carl George <carl.george@rackspace.com> - 2.7.9-1.ius
 - Latest upstream source
 - Refresh patches 55, 112, 146, 156
+- Readline is too old, skip test_readline (patch203)
 
 * Thu Jul 03 2014 Ben Harper <ben.harper@rackspace.com> -  2.7.8-1.ius
 - Latest upstream source
