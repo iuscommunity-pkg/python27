@@ -867,6 +867,11 @@ Obsoletes: python-sqlite2 <= 2.3.5-6
 Provides:   python-argparse = %{version}-%{release}
 %endif
 
+# The entirety of Python 3.4's ssl module has been backported for Python 2.7.9.
+# This makes backports.ssl_match_hostname pointless.
+# https://www.python.org/downloads/release/python-279/
+Obsoletes: %{python}-backports-ssl_match_hostname <= 3.4.0.2-3.ius%{?dist}
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 URL: http://www.python.org/
