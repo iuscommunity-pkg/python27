@@ -1190,7 +1190,6 @@ export CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
 export CXXFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
 export CPPFLAGS="$(pkg-config --cflags-only-I libffi)"
 export OPT="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
-export LINKCC="gcc"
 export LDFLAGS="$RPM_LD_FLAGS"
 if pkg-config openssl ; then
   export CFLAGS="$CFLAGS $(pkg-config --cflags openssl)"
@@ -1202,12 +1201,9 @@ fi
 export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
 %endif
 
-# Force CC
 %if 0%{?rhel} < 6
 export CC="gcc44"
 export LINKCC="gcc44"
-%else
-export CC=gcc
 %endif
 
 %if 0%{regenerate_autotooling_patch}
