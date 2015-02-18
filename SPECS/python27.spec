@@ -142,7 +142,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 1.ius%{?dist}
+Release: 2.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2041,6 +2041,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 18 2015 Carl George <carl.george@rackspace.com> - 2.7.9-2.ius
+- Build against expat21
+- Obsolete backports-ssl_match_hostname
+
 * Thu Dec 11 2014 Carl George <carl.george@rackspace.com> - 2.7.9-1.ius
 - Latest upstream source
 - Refresh patches 55, 112, 146, 156
