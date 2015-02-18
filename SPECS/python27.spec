@@ -166,18 +166,14 @@ BuildRequires: bzip2-devel
 
 # expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
 # it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
-#BuildRequires: expat-devel >= 2.1.0
-#RHSA-2012:0731-1 shows the bug in CVE-2012-0876 has been patched and no longer
-#need version 2.1.0.
-
+%if 0%{?rhel} < 7
+BuildRequires: expat21-devel
+%else
+BuildRequires: expat-devel >= 2.1.0
+%endif
 
 %if 0%{?rhel} < 6
-BuildRequires: expat2-devel
-Requires: expat2
 BuildRequires: gcc44
-%else
-BuildRequires: expat-devel
-Requires: expat
 %endif
 %if 0%{?fedora} >= 14
 BuildRequires: db4-devel >= 4.8
@@ -811,6 +807,9 @@ Patch201: 00201-disable-tests-in-test_locale.patch
 # readline in el6 is too old
 Patch203: 00203-skip-test-readline.patch
 
+# el5/el6 build against expat21 from EPEL
+Patch204: python-2.7.9-expat21.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -905,12 +904,10 @@ Group: Applications/System
 # this symbol (in pyexpat), so we must explicitly state this dependency to
 # prevent "import pyexpat" from failing with a linker error if someone hasn't
 # yet upgraded expat:
-# RHSA-2012:0731-1 shows the bug in CVE-2012-0876 has been patched and no longer
-# need version 2.1.0.
-%if 0%{?rhel} < 6
-Requires: expat2
+%if 0%{?rhel} < 7
+Requires: expat21
 %else
-Requires: expat
+Requires: expat >= 2.1.0
 %endif
 
 %description libs
@@ -1170,6 +1167,7 @@ done
 
 %if 0%{?rhel} <= 6
 %patch203 -p1
+%patch204 -p1
 %endif
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1199,10 +1197,9 @@ if pkg-config openssl ; then
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
 
-# If we are on RHEL 5, we need to use an alternative system expat
-%if 0%{?rhel} < 6 
-export CFLAGS="$CFLAGS -I%{_includedir}/expat2"
-export LDFLAGS="$LDFLAGS -L%{_libdir}/expat2"
+# el5/el6 build against expat21 from EPEL
+%if 0%{?rhel} < 7
+export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
 %endif
 
 # Force CC
