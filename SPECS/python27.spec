@@ -871,7 +871,7 @@ Provides:   python-argparse = %{version}-%{release}
 # https://www.python.org/downloads/release/python-279/
 Obsoletes: %{python}-backports-ssl_match_hostname <= 3.4.0.2-3.ius%{?dist}
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+%{?el5:BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)}
 
 URL: http://www.python.org/
 
@@ -1333,7 +1333,7 @@ BuildPython optimized \
 
 %install
 topdir=$(pwd)
-rm -rf %{buildroot}
+%{?el5:%{__rm} -rf %{buildroot}}
 mkdir -p %{buildroot}%{_prefix} %{buildroot}%{_mandir}
 
 # Clean up patched .py files that are saved as .lib64
@@ -1680,8 +1680,8 @@ CheckPython \
 # Cleaning up
 # ======================================================
 
-%clean
-rm -fr %{buildroot}
+%{?el5:%clean}
+%{?el5:%{__rm} -rf %{buildroot}}
 
 
 # ======================================================
