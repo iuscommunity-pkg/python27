@@ -154,7 +154,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 2.ius%{?dist}
+Release: 3.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2058,6 +2058,11 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Mon Feb 23 2015 Carl George <carl.george@rackspace.com> - 2.7.9-3.ius
+- Build against bundled expat on el5
+- Build against stock expat on el6
+- Disable building against expat21, but leave it as an option
+
 * Wed Feb 18 2015 Carl George <carl.george@rackspace.com> - 2.7.9-2.ius
 - Build against expat21
 - Obsolete backports-ssl_match_hostname
