@@ -144,6 +144,8 @@
 %else
 %global with_system_expat 0
 %endif
+# Alternatively, we can build against expat21 from EPEL.
+#global with_epel_expat 1
 
 # ==================
 # Top-level metadata
@@ -174,9 +176,13 @@ BuildRequires: bzip2-devel
 #BuildRequires: db4-devel >= 4.8
 #%endif
 
+%if 0%{?with_epel_expat}
+BuildRequires: expat21-devel
+%else
 %if 0%{?with_system_expat}
 BuildRequires: expat-devel
 %endif # with_system_expat
+%endif # with_epel_expat
 
 %if 0%{?rhel} < 6
 BuildRequires: gcc44
@@ -813,7 +819,7 @@ Patch201: 00201-disable-tests-in-test_locale.patch
 # readline in el6 is too old
 Patch203: 00203-skip-test-readline.patch
 
-# el5/el6 build against expat21 from EPEL
+# Optionally build against expat21 from EPEL.
 Patch204: python-2.7.9-expat21.patch
 
 # (New patches go here ^^^)
@@ -906,9 +912,13 @@ Group: Applications/System
 # Needed for ctypes, to load libraries, worked around for Live CDs size
 # Requires: binutils
 
+%if 0%{?with_epel_expat}
+Requires: expat21
+%else
 %if 0%{?with_system_expat}
 Requires: expat
 %endif # with_system_expat
+%endif # with_epel_expat
 
 %description libs
 This package contains runtime libraries for use by Python:
@@ -1036,7 +1046,7 @@ cp -a %{SOURCE5} .
 # Ensure that we're using the system copy of various libraries, rather than
 # copies shipped by upstream in the tarball:
 #   Remove embedded copy of expat:
-%if 0%{?with_system_expat}
+%if 0%{?with_system_expat} || 0%{?with_epel_expat}
 rm -r Modules/expat || exit 1
 %endif
 
@@ -1171,6 +1181,10 @@ done
 %patch203 -p1
 %endif
 
+%if 0%{?with_epel_expat}
+%patch204 -p1
+%endif
+
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
 
@@ -1197,6 +1211,10 @@ if pkg-config openssl ; then
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
 
+# Optionally build against expat21 from EPEL.
+%if 0%{?with_epel_expat}
+export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
+%endif
 
 %if 0%{?rhel} < 6
 export CC="gcc44"
@@ -1265,7 +1283,7 @@ BuildPython() {
   --enable-shared \
   --enable-unicode=%{unicode} \
   --with-dbmliborder=gdbm:ndbm:bdb \
-%if 0%{?with_system_expat}
+%if 0%{?with_system_expat} || 0%{?with_epel_expat}
   --with-system-expat \
 %endif
   --with-system-ffi \
