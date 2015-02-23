@@ -134,6 +134,16 @@
 # the rest of the build
 %global regenerate_autotooling_patch 0
 
+# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  This
+# symbol is used in pyexpat in order to mitigate CVE-2012-0876.  That symbol
+# was backported to el5/el6: https://rhn.redhat.com/errata/RHSA-2012-0731.html
+# However, el5's expat is missing other symbols that cause the build to fail.
+# We'll use the bundled expat on el5, and stock expat on el6.
+%if 0%{?rhel} >= 6
+%global with_system_expat 1
+%else
+%global with_system_expat 0
+%endif
 
 # ==================
 # Top-level metadata
@@ -164,13 +174,9 @@ BuildRequires: bzip2-devel
 #BuildRequires: db4-devel >= 4.8
 #%endif
 
-# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
-# it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
-%if 0%{?rhel} < 7
-BuildRequires: expat21-devel
-%else
-BuildRequires: expat-devel >= 2.1.0
-%endif
+%if 0%{?with_system_expat}
+BuildRequires: expat-devel
+%endif # with_system_expat
 
 %if 0%{?rhel} < 6
 BuildRequires: gcc44
@@ -900,15 +906,9 @@ Group: Applications/System
 # Needed for ctypes, to load libraries, worked around for Live CDs size
 # Requires: binutils
 
-# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
-# this symbol (in pyexpat), so we must explicitly state this dependency to
-# prevent "import pyexpat" from failing with a linker error if someone hasn't
-# yet upgraded expat:
-%if 0%{?rhel} < 7
-Requires: expat21
-%else
-Requires: expat >= 2.1.0
-%endif
+%if 0%{?with_system_expat}
+Requires: expat
+%endif # with_system_expat
 
 %description libs
 This package contains runtime libraries for use by Python:
@@ -1036,7 +1036,9 @@ cp -a %{SOURCE5} .
 # Ensure that we're using the system copy of various libraries, rather than
 # copies shipped by upstream in the tarball:
 #   Remove embedded copy of expat:
+%if 0%{?with_system_expat}
 rm -r Modules/expat || exit 1
+%endif
 
 #   Remove embedded copy of libffi:
 for SUBDIR in darwin libffi libffi_arm_wince libffi_msvc libffi_osx ; do
@@ -1167,7 +1169,6 @@ done
 
 %if 0%{?rhel} <= 6
 %patch203 -p1
-%patch204 -p1
 %endif
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1196,10 +1197,6 @@ if pkg-config openssl ; then
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
 
-# el5/el6 build against expat21 from EPEL
-%if 0%{?rhel} < 7
-export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
-%endif
 
 %if 0%{?rhel} < 6
 export CC="gcc44"
@@ -1268,7 +1265,9 @@ BuildPython() {
   --enable-shared \
   --enable-unicode=%{unicode} \
   --with-dbmliborder=gdbm:ndbm:bdb \
+%if 0%{?with_system_expat}
   --with-system-expat \
+%endif
   --with-system-ffi \
 %if 0%{?with_systemtap}
   --with-dtrace \
