@@ -153,8 +153,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.9
-Release: 3.ius%{?dist}
+Version: 2.7.10
+Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2058,6 +2058,9 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Tue May 26 2015 Carl George <carl.george@rackspace.com> - 2.7.10-1.ius
+* Latest upstream
+
 * Mon Feb 23 2015 Carl George <carl.george@rackspace.com> - 2.7.9-3.ius
 - Build against bundled expat on el5
 - Build against stock expat on el6
