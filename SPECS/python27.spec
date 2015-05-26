@@ -6,8 +6,6 @@
 %global __python_ver 27
 %global unicode ucs4
 
-%global _default_patch_fuzz 2
-
 %if "%{__python_ver}" != "EMPTY"
 %global main_python 0
 %global python python%{__python_ver}
@@ -2059,7 +2057,8 @@ CheckPython \
 
 %changelog
 * Tue May 26 2015 Carl George <carl.george@rackspace.com> - 2.7.10-1.ius
-* Latest upstream
+- Latest upstream
+- Remove _default_patch_fuzz to avoid patches being silently misapplied
 
 * Mon Feb 23 2015 Carl George <carl.george@rackspace.com> - 2.7.9-3.ius
 - Build against bundled expat on el5
