@@ -805,10 +805,16 @@ Patch165: 00165-sqlite3_int64.patch
 Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 
 # Skip failing test_gdb on RHEL 6
-Patch200: 00200-disable-tests-in-test_gdb.patch
+# Upstream conditions already cause this to be skipped
+# test_gdb skipped -- gdb security settings prevent use of custom hooks:
+# warning: File "/builddir/build/BUILD/Python-2.7.10/build/debug/python-debug-
+# gdb.py" auto-loading has been declined by your `auto-load safe-path' set to
+# "/usr/share/gdb/auto-load:/usr/lib/debug:/usr/bin/mono-gdb.py".
+#Patch200: 00200-disable-tests-in-test_gdb.patch
 
 #Skip failing test_locale on RHEL 6.0 and 6.1
-Patch201: 00201-disable-tests-in-test_locale.patch 
+# This passes now.
+#Patch201: 00201-disable-tests-in-test_locale.patch
 
 #fix for test_missing_localfile see http://bugs.python.org/issue16450
 # Patched upstream
@@ -1099,11 +1105,6 @@ done
 #%if 0%{?rhel} < 6
 #%patch541 -p1 -b .setup-db43
 #%endif
-
-%if 0%{?rhel} >= 6
-%patch200 -p1
-%patch201 -p1
-%endif
 
 #%patch202 -p1
 %if 0%{?with_systemtap}
@@ -2059,6 +2060,7 @@ CheckPython \
 * Tue May 26 2015 Carl George <carl.george@rackspace.com> - 2.7.10-1.ius
 - Latest upstream
 - Remove _default_patch_fuzz to avoid patches being silently misapplied
+- Remove patch200 and patch201
 - Refresh patch1, patch6, patch111, patch112, patch130, patch136, patch137,
   patch142, patch147, patch153, patch156 (imported from Fedora)
 
