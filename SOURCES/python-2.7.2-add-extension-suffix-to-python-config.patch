@@ -11,7 +11,7 @@ diff -up Python-2.7.2/Misc/python-config.in.add-extension-suffix-to-python-confi
  def exit_with_usage(code=1):
      print >>sys.stderr, "Usage: %s [%s]" % (sys.argv[0],
 @@ -54,3 +54,5 @@ for opt in opt_flags:
-             libs.extend(getvar('LINKFORSHARED').split())
+                 libs.extend(getvar('LINKFORSHARED').split())
          print ' '.join(libs)
  
 +    elif opt == '--extension-suffix':

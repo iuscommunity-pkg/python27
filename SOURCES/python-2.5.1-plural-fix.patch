@@ -7,6 +7,6 @@ diff -up Python-2.5.1/Lib/gettext.py.plural Python-2.5.1/Lib/gettext.py
                          continue
 +                    if item.startswith("#"):
 +                        continue
+                     k = v = None
                      if ':' in item:
                          k, v = item.split(':', 1)
-                         k = k.strip().lower()

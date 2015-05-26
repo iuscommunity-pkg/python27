@@ -343,7 +343,7 @@ Patch0: python-2.7.1-config.patch
 # in 2.2.1-12 as a response to the -g option needing TkInter installed
 # (Red Hat Linux 8)
 # Not upstream
-Patch1: Python-2.2.1-pydocnogui.patch
+Patch1: 00001-pydocnogui.patch
 
 # Add $(CFLAGS) to the linker arguments when linking the "python" binary
 # since some architectures (sparc64) need this (rhbz:199373).
@@ -2059,6 +2059,8 @@ CheckPython \
 * Tue May 26 2015 Carl George <carl.george@rackspace.com> - 2.7.10-1.ius
 - Latest upstream
 - Remove _default_patch_fuzz to avoid patches being silently misapplied
+- Refresh patch1, patch6, patch111, patch112, patch130, patch136, patch137,
+  patch142, patch147, patch153, patch156 (imported from Fedora)
 
 * Mon Feb 23 2015 Carl George <carl.george@rackspace.com> - 2.7.9-3.ius
 - Build against bundled expat on el5
