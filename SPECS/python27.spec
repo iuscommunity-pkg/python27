@@ -76,7 +76,7 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=531117
 # This was fixed by the time EL6 was released (rpm >= 4.7.1-8). Add the following
 # macro to fix the issue on EL5.
-# 
+#
 # %global __os_install_post %{__python27_os_install_post}
 
 %global __os_install_post    \
@@ -188,7 +188,7 @@ BuildRequires: gcc44
 %if 0%{?fedora} >= 14
 BuildRequires: db4-devel >= 4.8
 %else
-%if 0%{?rhel} < 6 
+%if 0%{?rhel} < 6
 BuildRequires: db4-devel >= 4.3
 %else
 BuildRequires: db4-devel >= 4.7
@@ -424,7 +424,7 @@ Patch55: 00055-systemtap.patch
 # which is already upstream
 # Earlier versions of the patch (from the "dist-pkgs" CVS repo within RH)
 # contained additional changes that applied fixes to the internals of the regex
-# module, but these appear to have all been applied as part of 
+# module, but these appear to have all been applied as part of
 #  http://bugs.python.org/issue931848
 # merged upstream
 #Patch101: python-2.3.4-lib64-regex.patch
@@ -1261,14 +1261,14 @@ BuildPython() {
   pushd $ConfDir
 
 # Use the freshly created "configure" script, but in the directory two above:
-%if 0%{?fedora} >= 14  
+%if 0%{?fedora} >= 14
   %global _configure $topdir/configure
 %else
   %global configure $topdir/configure
 %endif
 
 %configure \
-%if 0%{?rhel} <= 6 
+%if 0%{?rhel} <= 6
   --prefix=/usr \
   --bindir=/usr/bin \
   %if "%{_lib}" == "lib64"
@@ -2119,11 +2119,11 @@ CheckPython \
 - added Patch202
 - disabled Patch158 and Patch164
 - update sqlite3 files for RHEL 5
-- remove man1/python.1 as it conflicts with stock python 
+- remove man1/python.1 as it conflicts with stock python
 
 * Wed Feb 06 2013 Ben Harper <ben.harper@rackspace.com> - 2.7.3-19.ius
 - skip test_gdb for RHEL 6
-- RHSA-2012:0731-1 shows the bug in CVE-2012-0876 has been pathced.  
+- RHSA-2012:0731-1 shows the bug in CVE-2012-0876 has been pathced.
   No need for explicit version requirements on expat for RHEL 6
 
 * Tue Feb 05 2013 Jeffrey Ness <jeffrey.ness@rackspace.com> - 2.7.3-18
