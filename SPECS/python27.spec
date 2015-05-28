@@ -808,7 +808,7 @@ Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 # Upstream conditions already cause this to be skipped
 # test_gdb skipped -- gdb security settings prevent use of custom hooks:
 # warning: File "/builddir/build/BUILD/Python-2.7.10/build/debug/python-debug-
-# gdb.py" auto-loading has been declined by your `auto-load safe-path' set to
+# gdb.py" auto-loading has been declined by your 'auto-load safe-path' set to
 # "/usr/share/gdb/auto-load:/usr/lib/debug:/usr/bin/mono-gdb.py".
 #Patch200: 00200-disable-tests-in-test_gdb.patch
 
