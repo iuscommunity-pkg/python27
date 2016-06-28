@@ -151,7 +151,7 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.11
+Version: 2.7.12
 Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
@@ -1091,7 +1091,7 @@ done
 %patch104 -p1
 %endif
 
-%patch10 -p1 -b .binutils-no-dep
+#%patch10 -p1 -b .binutils-no-dep
 # patch11: upstream as of Python 2.7.3
 %patch13 -p1 -b .socketmodule
 %patch14 -p1 -b .socketmodule2
@@ -1113,7 +1113,7 @@ done
 
 %patch111 -p1 -b .no-static-lib
 
-%patch112 -p1 -b .debug-build
+%patch112 -p1 -b .debug-build -F 2
 
 %patch113 -p1 -b .more-configuration-flags
 
@@ -2057,6 +2057,11 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
+- Latest upstream
+- refresh patch102, patch112, patch134
+- disable patch10
+
 * Mon Dec 07 2015 Carl George <carl.george@rackspace.com> - 2.7.11-1.ius
 - Latest upstream
 
