@@ -1199,9 +1199,12 @@ fi
 export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
 %endif
 
-%if 0%{?rhel} < 6
+%if 0%{?rhel} && 0%{?rhel} < 6
 export CC="gcc44"
 export LINKCC="gcc44"
+%else
+export CC="gcc"
+export LINKCC="gcc"
 %endif
 
 %if 0%{regenerate_autotooling_patch}
@@ -2046,6 +2049,7 @@ CheckPython \
 - Import patch102 from Fedora, and rebase it
 - Rebase patch146
 - (lib)db4-devel build requirement cleanup
+- Improve logic for exporting CC and LINKCC
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
