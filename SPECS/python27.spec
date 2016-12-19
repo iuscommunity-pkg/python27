@@ -434,7 +434,7 @@ Patch55: 00055-systemtap.patch
 # and add the /usr/lib64/pythonMAJOR.MINOR/site-packages to sitedirs, in front of
 # /usr/lib/pythonMAJOR.MINOR/site-packages
 # Not upstream
-Patch102: python-2.7.3-lib64.patch
+Patch102: 00102-2.7.12-lib64.patch
 
 # Python 2.7 split out much of the path-handling from distutils/sysconfig.py to
 # a new sysconfig.py (in r77704).
@@ -2059,6 +2059,7 @@ CheckPython \
 %changelog
 * Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
 - Latest upstream
+- Import patch102 from Fedora, and rebase it
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
