@@ -151,7 +151,7 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.12
+Version: 2.7.13
 Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
@@ -2057,6 +2057,9 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
+- Latest upstream
+
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
 - refresh patch102, patch112, patch134
