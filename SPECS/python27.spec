@@ -1838,6 +1838,8 @@ CheckPython \
 
 %{_libdir}/%{py_INSTSONAME_optimized}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_optimized}
 %doc systemtap-example.stp pyfuntop.stp
 %endif
@@ -1995,6 +1997,8 @@ CheckPython \
 
 %{_libdir}/%{py_INSTSONAME_debug}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_debug}
 %endif
 
@@ -2050,6 +2054,7 @@ CheckPython \
 - Rebase patch146
 - (lib)db4-devel build requirement cleanup
 - Improve logic for exporting CC and LINKCC
+- Own systemtap dirs (rhbz#710733) (Fedora)
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
