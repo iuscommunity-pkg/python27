@@ -170,10 +170,6 @@ BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
 
-#%if 0%{?fedora} && 0%{?fedora} < 18 || 0%{?rhel} && 0%{?rhel} < 7
-#BuildRequires: db4-devel >= 4.8
-#%endif
-
 %if 0%{?with_epel_expat}
 BuildRequires: expat21-devel
 %else
@@ -185,16 +181,6 @@ BuildRequires: expat-devel
 %if 0%{?rhel} < 6
 BuildRequires: gcc44
 %endif
-%if 0%{?fedora} >= 14
-BuildRequires: db4-devel >= 4.8
-%else
-%if 0%{?rhel} < 6
-BuildRequires: db4-devel >= 4.3
-%else
-BuildRequires: db4-devel >= 4.7
-%endif
-%endif
-
 BuildRequires: findutils
 BuildRequires: gcc-c++
 %if %{with_gdbm}
@@ -202,9 +188,7 @@ BuildRequires: gdbm-devel
 %endif
 BuildRequires: glibc-devel
 BuildRequires: gmp-devel
-%if 0%{?fedora} >= 18 || 0%{?rhel} >= 7
-BuildRequires: libdb4-devel
-%endif
+BuildRequires: db4-devel
 BuildRequires: libffi-devel
 BuildRequires: libGL-devel
 BuildRequires: libX11-devel
@@ -2061,6 +2045,7 @@ CheckPython \
 - Latest upstream
 - Import patch102 from Fedora, and rebase it
 - Rebase patch146
+- (lib)db4-devel build requirement cleanup
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
