@@ -1645,6 +1645,11 @@ CheckPython() {
   fi
 %endif
 
+%if 0%{?rhel} && 0%{?rhel} < 6
+  # test_sqlite fails on EL5
+  EXTRATESTOPTS="$EXTRATESTOPTS --exclude test_sqlite"
+%endif
+
   # Run the upstream test suite, setting "WITHIN_PYTHON_RPM_BUILD" so that the
   # our non-standard decorators take effect on the relevant tests:
   #   @unittest._skipInRpmBuild(reason)
@@ -2049,6 +2054,7 @@ CheckPython \
 - Improve logic for exporting CC and LINKCC
 - Own systemtap dirs (rhbz#710733) (Fedora)
 - Remove patch203, fixed upstream
+- Skip test_sqlite on EL5
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
