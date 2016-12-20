@@ -804,9 +804,6 @@ Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 # Patched upstream
 #Patch202: 00202-fix-for-test_missing_localfile.patch
 
-# readline in el6 is too old
-Patch203: 00203-skip-test-readline.patch
-
 # Optionally build against expat21 from EPEL.
 Patch204: python-2.7.9-expat21.patch
 
@@ -1159,10 +1156,6 @@ done
 #%patch164 -p1
 #%patch165 -p1
 %patch173 -p1
-
-%if 0%{?rhel} <= 6
-%patch203 -p1
-%endif
 
 %if 0%{?with_epel_expat}
 %patch204 -p1
@@ -2055,6 +2048,7 @@ CheckPython \
 - (lib)db4-devel build requirement cleanup
 - Improve logic for exporting CC and LINKCC
 - Own systemtap dirs (rhbz#710733) (Fedora)
+- Remove patch203, fixed upstream
 
 * Tue Jun 28 2016 Ben Harper <ben.harper@rackspace.com> - 2.7.12-1.ius
 - Latest upstream
