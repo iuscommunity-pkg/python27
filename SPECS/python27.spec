@@ -1256,12 +1256,12 @@ rm -f %{buildroot}%{pylibdir}/LICENSE.txt
 
 #make the binaries install side by side with the main python
 pushd %{buildroot}%{_bindir}
-mv idle idle%{__python_ver}
-mv pynche pynche%{__python_ver}
-mv pygettext.py pygettext%{__python_ver}.py
-mv msgfmt.py msgfmt%{__python_ver}.py
-mv smtpd.py smtpd%{__python_ver}.py
-mv pydoc pydoc%{__python_ver}
+mv idle python%{pybasever}-idle
+mv pynche python%{pybasever}-pynche
+mv pygettext.py python%{pybasever}-pygettext.py
+mv msgfmt.py python%{pybasever}-msgfmt.py
+mv smtpd.py python%{pybasever}-smtpd.py
+mv pydoc python%{pybasever}-pydoc
 popd
 
 # Fix for bug #136654
@@ -1451,8 +1451,8 @@ CheckPython \
 %files
 %defattr(-, root, root, -)
 %doc LICENSE README
-%{_bindir}/pydoc*
 %{_bindir}/python%{pybasever}
+%{_bindir}/python%{pybasever}-pydoc
 %{_mandir}/*/*
 
 %files libs
@@ -1614,12 +1614,12 @@ CheckPython \
 %defattr(-,root,root,755)
 %doc Tools/pynche/README.pynche
 %{site_packages}/pynche
-%{_bindir}/smtpd*.py*
+%{_bindir}/python%{pybasever}-smtpd.py
 %{_bindir}/2to3*
-%{_bindir}/idle*
-%{_bindir}/pynche*
-%{_bindir}/pygettext*.py*
-%{_bindir}/msgfmt*.py*
+%{_bindir}/python%{pybasever}-idle
+%{_bindir}/python%{pybasever}-pynche
+%{_bindir}/python%{pybasever}-pygettext.py
+%{_bindir}/python%{pybasever}-msgfmt.py
 %{tools_dir}
 %{demo_dir}
 %{pylibdir}/Doc
@@ -1785,6 +1785,7 @@ CheckPython \
 %changelog
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
+- Rename *27 commands to python2.7-*
 
 * Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
 - Latest upstream
