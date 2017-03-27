@@ -1262,6 +1262,7 @@ mv pygettext.py python%{pybasever}-pygettext.py
 mv msgfmt.py python%{pybasever}-msgfmt.py
 mv smtpd.py python%{pybasever}-smtpd.py
 mv pydoc python%{pybasever}-pydoc
+mv 2to3 python%{pybasever}-2to3
 popd
 
 # Fix for bug #136654
@@ -1615,7 +1616,7 @@ CheckPython \
 %doc Tools/pynche/README.pynche
 %{site_packages}/pynche
 %{_bindir}/python%{pybasever}-smtpd.py
-%{_bindir}/2to3*
+%{_bindir}/python%{pybasever}-2to3
 %{_bindir}/python%{pybasever}-idle
 %{_bindir}/python%{pybasever}-pynche
 %{_bindir}/python%{pybasever}-pygettext.py
@@ -1786,6 +1787,7 @@ CheckPython \
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
 - Rename *27 commands to python2.7-*
+- Rename 2to3 to avoid file conflict with stock python-tools
 
 * Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
 - Latest upstream
