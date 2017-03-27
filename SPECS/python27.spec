@@ -1211,6 +1211,10 @@ rm %{buildroot}%{_bindir}/python2-debug
 rm %{buildroot}%{_bindir}/python2-debug-config
 rm %{buildroot}%{_mandir}/man1/python.1
 rm %{buildroot}%{_mandir}/man1/python2.1
+rm %{buildroot}%{_libdir}/pkgconfig/python.pc
+rm %{buildroot}%{_libdir}/pkgconfig/python-debug.pc
+rm %{buildroot}%{_libdir}/pkgconfig/python2.pc
+rm %{buildroot}%{_libdir}/pkgconfig/python2-debug.pc
 
 # tools
 
@@ -1599,8 +1603,6 @@ CheckPython \
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
-%{_libdir}/pkgconfig/python.pc
-%{_libdir}/pkgconfig/python2.pc
 %{pylibdir}/config/*
 %exclude %{pylibdir}/config/Makefile
 %{pylibdir}/distutils/command/wininst-*.exe
@@ -1745,8 +1747,6 @@ CheckPython \
 # Analog of the -devel subpackage's files:
 %dir %{pylibdir}/config-debug
 %{_libdir}/pkgconfig/python-%{pybasever}-debug.pc
-%{_libdir}/pkgconfig/python-debug.pc
-%{_libdir}/pkgconfig/python2-debug.pc
 %{pylibdir}/config-debug/*
 %{_includedir}/python%{pybasever}-debug/*.h
 %{_bindir}/python%{pybasever}-debug-config
@@ -1788,6 +1788,7 @@ CheckPython \
 - Remove main_python conditionals
 - Rename *27 commands to python2.7-*
 - Rename 2to3 to avoid file conflict with stock python-tools
+- Remove python.pc, python-debug.pc, python2.pc, and python2-debug.pc symlinks
 
 * Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
 - Latest upstream
