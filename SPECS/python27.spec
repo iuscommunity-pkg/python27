@@ -217,7 +217,6 @@ BuildRequires: valgrind-devel
 BuildRequires: zlib-devel
 
 
-
 # =======================
 # Source code and patches
 # =======================
@@ -234,7 +233,6 @@ Source2: pythondeps.sh
 # Written by dmalcolm; not yet sent upstream
 Source3: libpython.stp
 
-
 # Example systemtap script using the tapset
 # Written by wcohen, mjw, dmalcolm; not yet sent upstream
 Source4: systemtap-example.stp
@@ -243,15 +241,10 @@ Source4: systemtap-example.stp
 # Written by dmalcolm; not yet sent upstream
 Source5: pyfuntop.stp
 
-# Supply various useful macros for building python 2 modules:
-#  __python2, python2_sitelib, python2_sitearch, python2_version
-#Source6: macros.python2
-
 # This defines a __python27_os_install_post macro, so that a specfile for a
 # module should merely need to redefine __os_install_post to this in order to
 # be byte-compiled using python2.7
 Source6: macros.python27
-
 
 # Modules/Setup.dist is ultimately used by the "makesetup" script to construct
 # the Makefile and config.c
@@ -361,16 +354,6 @@ Patch6: python-2.5.1-plural-fix.patch
 # it may be papering over a symptom
 Patch7: python-2.5.1-sqlite-encoding.patch
 
-# FIXME: Lib/ctypes/util.py posix implementation defines a function
-# _get_soname(f).  Upstreams's implementation of this uses objdump to read the
-# SONAME from a library; we avoid this, apparently to minimize space
-# requirements on the live CD:
-# (rhbz:307221)
-Patch10: python-2.7rc1-binutils-no-dep.patch
-
-# Upstream as of Python 2.7.3:
-#  Patch11: python-2.7rc1-codec-ascii-tolower.patch
-
 # Add various constants to the socketmodule (rhbz#436560):
 # TODO: these patches were added in 2.5.1-22 and 2.5.1-24 but appear not to
 # have been sent upstream yet:
@@ -386,10 +369,6 @@ Patch16: python-2.6-rpath.patch
 # super() as it's an old-style class
 Patch17: python-2.6.4-distutils-rpath.patch
 
-# Patch setup.py so that it links against db-4.8:
-#Patch54: python-2.6.4-setup-db48.patch
-#Patch541: python-2.6.4-setup-db43.patch
-
 # 00055 #
 # Systemtap support: add statically-defined probe points
 # Patch based on upstream bug: http://bugs.python.org/issue4111
@@ -397,21 +376,6 @@ Patch17: python-2.6.4-distutils-rpath.patch
 # then rewritten by mjw (attachment 390110 of rhbz 545179), then reformatted
 # for 2.7rc1 by dmalcolm:
 Patch55: 00055-systemtap.patch
-
-# "lib64 patches"
-# This patch seems to be associated with bug 122304, which was
-#  http://sourceforge.net/tracker/?func=detail&atid=105470&aid=931848&group_id=5470
-# and is now
-#  http://bugs.python.org/issue931848
-# However, as it stands this patch is merely a copy of:
-#  http://svn.python.org/view/python/trunk/Lib/test/test_re.py?r1=35825&r2=35824&pathrev=35825
-# which is already upstream
-# Earlier versions of the patch (from the "dist-pkgs" CVS repo within RH)
-# contained additional changes that applied fixes to the internals of the regex
-# module, but these appear to have all been applied as part of
-#  http://bugs.python.org/issue931848
-# merged upstream
-#Patch101: python-2.3.4-lib64-regex.patch
 
 # Only used when "%{_lib}" == "lib64"
 # Fixup various paths throughout the build and in distutils from "lib" to "lib64",
@@ -516,9 +480,6 @@ Patch113: 00113-more-configuration-flags.patch
 # Not yet sent upstream
 Patch114: 00114-statvfs-f_flag-constants.patch
 
-# Upstream as of Python 2.7.3:
-#  Patch115: make-pydoc-more-robust-001.patch
-
 # Upstream r79310 removed the "Modules" directory from sys.path when Python is
 # running from the build directory on POSIX to fix a unit test (issue #8205).
 # This seems to have broken the compileall.py done in "make install": it cannot
@@ -541,16 +502,6 @@ Patch121: 00121-add-Modules-to-build-path.patch
 # must be set to enable the output on exit
 # Not yet sent upstream
 Patch125: 00125-less-verbose-COUNT_ALLOCS.patch
-
-# Fix dbm module on big-endian 64-bit
-# Sent upstream as http://bugs.python.org/issue9687 (rhbz#626756)
-# Patched upstream
-#Patch126: fix-dbm_contains-on-64bit-bigendian.patch
-
-# Fix test_structmember on big-endian 64-bit
-# Sent upstream as http://bugs.python.org/issue9960
-# Patched upstream
-#Patch127: fix-test_structmember-on-64bit-bigendian.patch
 
 # 2.7.1 (in r84230) added a test to test_abc which fails if python is
 # configured with COUNT_ALLOCS, which is the case for our debug build
@@ -653,10 +604,6 @@ Patch143: 00143-tsc-on-ppc.patch
 # (Optionally) disable the gdbm module:
 Patch144: 00144-no-gdbm.patch
 
-# 00145 #
-# Upstream as of Python 2.7.3:
-#  Patch145: 00145-force-sys-platform-to-be-linux2.patch
-
 # 00146 #
 # Support OpenSSL FIPS mode (e.g. when OPENSSL_FORCE_FIPS_MODE=1 is set)
 # - handle failures from OpenSSL (e.g. on attempts to use MD5 in a
@@ -681,38 +628,12 @@ Patch146: 00146-hashlib-fips.patch
 # Sent upstream as http://bugs.python.org/issue14785
 Patch147: 00147-add-debug-malloc-stats.patch
 
-# 00148 #
-# Upstream as of Python 2.7.3:
-#  Patch148: 00148-gdbm-1.9-magic-values.patch
-
-# 00149 #
-# python3.spec's
-#   Patch149: 00149-backport-issue11254-pycache-bytecompilation-fix.patch
-# is not relevant for Python 2
-
-# 00150 #
-# python3.spec has:
-#  Patch150: 00150-disable-rAssertAlmostEqual-cmath-on-ppc.patch
-# as a workaround for a glibc bug on PPC (bz #750811)
-
-# 00151 #
-# Upstream as of Python 2.7.3:
-#  Patch151: 00151-fork-deadlock.patch
-
-# 00152 #
-# python3.spec has:
-#  Patch152: 00152-fix-test-gdb-regex.patch
-
 # 00153 #
 # Strip out lines of the form "warning: Unable to open ..." from gdb's stderr
 # when running test_gdb.py; also cope with change to gdb in F17 onwards in
 # which values are printed as "v@entry" rather than just "v":
 # Not yet sent upstream
 Patch153: 00153-fix-test_gdb-noise.patch
-
-# 00154 #
-# python3.spec on f15 has:
-#  Patch154: 00154-skip-urllib-test-requiring-working-DNS.patch
 
 # 00155 #
 # Avoid allocating thunks in ctypes unless absolutely necessary, to avoid
@@ -743,66 +664,8 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
-# 00158 #
-# This patch fixes a memory leak in _hashlib module, as reported in
-# RHBZ #836285; upstream report http://bugs.python.org/issue15219.
-# The patch has been accepted upstream, so this should be commented out
-# when packaging next upstream release.
-# The fix for Fedora specific "implement_specific_EVP_new()" function
-# has been merged into patch 00146.
-#Patch158: 00158-fix-hashlib-leak.patch
-
-# 00159 #
-# From F18 on, there is a libdb4 package, that replaces db4. It places header
-# files in "/usr/include/libdb4", not in "/usr/include/db4", this patch
-# fixes this.
-# Downstream only modification.
-#Patch159: 00159-correct-libdb-include-path.patch
-
-# 00160 #
-# python3.spec's
-#   Patch160: 00160-disable-test_fs_holes-in-rpm-build.patch
-# is not relevant for Python 2
-
-# 00161 #
-# python3.spec has:
-#   Patch161: 00161-fix-test_tools-directory.patch
-# which will likely become relevant for Python 2 next time we rebase
-
-# 00162 #
-# python3.spec has:
-#  Patch162: 00162-distutils-sysconfig-fix-CC-options.patch
-
-# 00163 #
-# python3.spec has:
-#  Patch163: 00163-disable-parts-of-test_socket-in-rpm-build.patch
-
-# patched in 2.7.4
-# Bug while trying to compile with sqlite3 support
-# http://bugs.python.org/issue14572
-#Patch164: 00164-sqlite3_int64.patch
-
-# more issues when trying to compile with sqlite3 support
-Patch165: 00165-sqlite3_int64.patch
-
 #Workaround for ENOPROTOOPT seen in Koji and other build systems withi test.support.bind_port()
 Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
-
-# Skip failing test_gdb on RHEL 6
-# Upstream conditions already cause this to be skipped
-# test_gdb skipped -- gdb security settings prevent use of custom hooks:
-# warning: File "/builddir/build/BUILD/Python-2.7.10/build/debug/python-debug-
-# gdb.py" auto-loading has been declined by your 'auto-load safe-path' set to
-# "/usr/share/gdb/auto-load:/usr/lib/debug:/usr/bin/mono-gdb.py".
-#Patch200: 00200-disable-tests-in-test_gdb.patch
-
-#Skip failing test_locale on RHEL 6.0 and 6.1
-# This passes now.
-#Patch201: 00201-disable-tests-in-test_locale.patch
-
-#fix for test_missing_localfile see http://bugs.python.org/issue16450
-# Patched upstream
-#Patch202: 00202-fix-for-test_missing_localfile.patch
 
 # Optionally build against expat21 from EPEL.
 Patch204: python-2.7.9-expat21.patch
@@ -960,7 +823,6 @@ Provides: tkinter2 = %{version}
 %endif
 
 %description -n %{tkinter}
-
 The Tkinter (Tk interface) program is an graphical user interface for
 the Python scripting language.
 
@@ -973,7 +835,6 @@ Group: Development/Languages
 Requires: %{name} = %{version}-%{release}
 
 %description test
-
 The test modules from the main python package: %{name}
 These have been removed to save space, as they are never or almost
 never used in production.
@@ -1062,53 +923,28 @@ done
 %patch6 -p1 -b .plural
 %patch7 -p1
 
-# Try not disabling egg-infos, bz#414711
-#patch50 -p1 -b .egginfo
-
-#%patch101 -p1 -b .lib64-regex
 %if "%{_lib}" == "lib64"
 %patch102 -p1 -b .lib64
 %patch103 -p1 -b .lib64-sysconfig
 %patch104 -p1
 %endif
 
-#%patch10 -p1 -b .binutils-no-dep
-# patch11: upstream as of Python 2.7.3
 %patch13 -p1 -b .socketmodule
 %patch14 -p1 -b .socketmodule2
 %patch16 -p1 -b .rpath
 %patch17 -p1 -b .distutils-rpath
 
-#%if 0%{?fedora} >= 14
-#%patch54 -p1 -b .setup-db48
-#%endif
-
-#%if 0%{?rhel} < 6
-#%patch541 -p1 -b .setup-db43
-#%endif
-
-#%patch202 -p1
 %if 0%{?with_systemtap}
 %patch55 -p1 -b .systemtap
 %endif
 
 %patch111 -p1 -b .no-static-lib
-
 %patch112 -p1 -b .debug-build -F 2
-
 %patch113 -p1 -b .more-configuration-flags
-
 %patch114 -p1 -b .statvfs-f-flag-constants
-
-# patch115: upstream as of Python 2.7.3
-
-#%patch121 -p0 -R
 %patch121 -p1
 %patch125 -p1 -b .less-verbose-COUNT_ALLOCS
-#%patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
-#%patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
 %patch128 -p1
-
 %patch130 -p1
 
 %ifarch ppc %{power64}
@@ -1134,27 +970,12 @@ done
 %if !%{with_gdbm}
 %patch144 -p1
 %endif
-# 00145: upstream as of Python 2.7.3
 %patch146 -p1
 %patch147 -p1
-# 00148: upstream as of Python 2.7.3
-# 00149: not for python 2
-# 00150: not for python 2
-# 00151: upstream as of Python 2.7.3
-# 00152: not for python 2
 %patch153 -p0
-# 00154: not for python 2
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
-#%patch158 -p1
-#%patch159 -p1 -F 3
-# 00160: not for python 2
-# 00161: not for python 2 yet
-# 00162: not for python 2 yet
-# 00163: not for python 2 yet
-#%patch164 -p1
-#%patch165 -p1
 %patch173 -p1
 
 %if 0%{?with_epel_expat}
@@ -1432,23 +1253,18 @@ fi
 
 %if %{main_python}
 %else
-#mv %{buildroot}%{_bindir}/python %{buildroot}%{_bindir}/%{python}
-#%if 0%{?with_debug_build}
-#mv %{buildroot}%{_bindir}/python-debug %{buildroot}%{_bindir}/%{python}-debug
-#%endif # with_debug_build
-
 # remove python2 and python paths
 # we will be keeping 2.7 on our bins
-rm -rf %{buildroot}%{_bindir}/python
-rm -rf %{buildroot}%{_bindir}/python-config
-rm -rf %{buildroot}%{_bindir}/python-debug
-rm -rf %{buildroot}%{_bindir}/python-debug-config
-rm -rf %{buildroot}%{_bindir}/python2
-rm -rf %{buildroot}%{_bindir}/python2-config
-rm -rf %{buildroot}%{_bindir}/python2-debug
-rm -rf %{buildroot}%{_bindir}/python2-debug-config
-
-#mv %{buildroot}/%{_mandir}/man1/python.1 %{buildroot}/%{_mandir}/man1/python%{pybasever}.1
+rm %{buildroot}%{_bindir}/python
+rm %{buildroot}%{_bindir}/python-config
+rm %{buildroot}%{_bindir}/python-debug
+rm %{buildroot}%{_bindir}/python-debug-config
+rm %{buildroot}%{_bindir}/python2
+rm %{buildroot}%{_bindir}/python2-config
+rm %{buildroot}%{_bindir}/python2-debug
+rm %{buildroot}%{_bindir}/python2-debug-config
+rm %{buildroot}%{_mandir}/man1/python.1
+rm %{buildroot}%{_mandir}/man1/python2.1
 %endif
 
 # tools
@@ -1490,13 +1306,8 @@ find %{buildroot}/ -name ".cvsignore"|xargs rm -f
 find %{buildroot}/ -name "*.bat"|xargs rm -f
 find . -name "*~"|xargs rm -f
 find . -name ".cvsignore"|xargs rm -f
-
-#conflicts with stock python
-rm -rf %{buildroot}%{_mandir}/man1/python.1
-
 #zero length
 rm -f %{buildroot}%{pylibdir}/LICENSE.txt
-
 
 #make the binaries install side by side with the main python
 %if !%{main_python}
@@ -1692,7 +1503,6 @@ CheckPython \
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
-
 
 
 %files
