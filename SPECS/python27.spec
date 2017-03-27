@@ -2,20 +2,10 @@
 # Conditionals and other variables controlling the build
 # ======================================================
 
-%{!?__python_ver:%global __python_ver EMPTY}
 %global __python_ver 27
 %global unicode ucs4
-
-%if "%{__python_ver}" != "EMPTY"
-%global main_python 0
 %global python python%{__python_ver}
 %global tkinter tkinter%{__python_ver}
-%else
-%global main_python 1
-%global python python
-%global tkinter tkinter
-%endif
-
 %global pybasever 2.7
 %global pylibdir %{_libdir}/python%{pybasever}
 %global tools_dir %{pylibdir}/Tools
@@ -152,7 +142,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.13
-Release: 1.ius%{?dist}
+Release: 2.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -699,33 +689,6 @@ Patch5000: 05000-autotool-intermediates.patch
 # Additional metadata, and subpackages
 # ======================================================
 
-%if %{main_python}
-Obsoletes: Distutils
-Provides: Distutils
-Obsoletes: python2
-Provides: python2 = %{version}
-Obsoletes: python-elementtree <= 1.2.6
-Obsoletes: python-sqlite < 2.3.2
-Provides: python-sqlite = 2.3.2
-Obsoletes: python-ctypes < 1.0.1
-Provides: python-ctypes = 1.0.1
-Obsoletes: python-hashlib < 20081120
-Provides: python-hashlib = 20081120
-Obsoletes: python-uuid < 1.31
-Provides: python-uuid = 1.31
-
-# python-sqlite2-2.3.5-5.fc18 was retired.  Obsolete the old package here
-# so it gets uninstalled on updates
-%if 0%{?fedora} >= 17
-Obsoletes: python-sqlite2 <= 2.3.5-6
-%endif
-
-# python-argparse is part of python as of version 2.7
-# drop this Provides in F17
-# (having Obsoletes here caused problems with multilib; see rhbz#667984)
-Provides:   python-argparse = %{version}-%{release}
-%endif
-
 # The entirety of Python 3.4's ssl module has been backported for Python 2.7.9.
 # This makes backports.ssl_match_hostname pointless.
 # https://www.python.org/downloads/release/python-279/
@@ -757,9 +720,6 @@ implementation is within the "python-libs" package.
 Summary: Runtime libraries for Python
 Group: Applications/System
 
-# Needed for ctypes, to load libraries, worked around for Live CDs size
-# Requires: binutils
-
 %if 0%{?with_epel_expat}
 Requires: expat21
 %else
@@ -782,10 +742,6 @@ Requires: pkgconfig
 # Needed here because of the migration of Makefile from -devel to the main
 # package
 Conflicts: %{python} < %{version}-%{release}
-%if %{main_python}
-Obsoletes: python2-devel
-Provides: python2-devel = %{version}-%{release}
-%endif
 
 %description devel
 The Python programming language's interpreter can be extended with
@@ -803,10 +759,6 @@ Summary: A collection of development tools included with Python
 Group: Development/Tools
 Requires: %{name} = %{version}-%{release}
 Requires: %{tkinter} = %{version}-%{release}
-%if %{main_python}
-Obsoletes: python2-tools
-Provides: python2-tools = %{version}
-%endif
 
 %description tools
 This package includes several tools to help with the development of Python
@@ -817,10 +769,6 @@ color editor (pynche), and a python gettext program (pygettext.py).
 Summary: A graphical user interface for the Python scripting language
 Group: Development/Languages
 Requires: %{name} = %{version}-%{release}
-%if %{main_python}
-Obsoletes: tkinter2
-Provides: tkinter2 = %{version}
-%endif
 
 %description -n %{tkinter}
 The Tkinter (Tk interface) program is an graphical user interface for
@@ -1251,8 +1199,6 @@ mkdir %{buildroot}/%{pylibdir}/test
 cp -a save_bits_of_test/* %{buildroot}/%{pylibdir}/test
 fi
 
-%if %{main_python}
-%else
 # remove python2 and python paths
 # we will be keeping 2.7 on our bins
 rm %{buildroot}%{_bindir}/python
@@ -1265,7 +1211,6 @@ rm %{buildroot}%{_bindir}/python2-debug
 rm %{buildroot}%{_bindir}/python2-debug-config
 rm %{buildroot}%{_mandir}/man1/python.1
 rm %{buildroot}%{_mandir}/man1/python2.1
-%endif
 
 # tools
 
@@ -1310,7 +1255,6 @@ find . -name ".cvsignore"|xargs rm -f
 rm -f %{buildroot}%{pylibdir}/LICENSE.txt
 
 #make the binaries install side by side with the main python
-%if !%{main_python}
 pushd %{buildroot}%{_bindir}
 mv idle idle%{__python_ver}
 mv pynche pynche%{__python_ver}
@@ -1319,7 +1263,6 @@ mv msgfmt.py msgfmt%{__python_ver}.py
 mv smtpd.py smtpd%{__python_ver}.py
 mv pydoc pydoc%{__python_ver}
 popd
-%endif
 
 # Fix for bug #136654
 rm -f %{buildroot}%{pylibdir}/email/test/data/audiotest.au %{buildroot}%{pylibdir}/test/audiotest.au
@@ -1509,10 +1452,6 @@ CheckPython \
 %defattr(-, root, root, -)
 %doc LICENSE README
 %{_bindir}/pydoc*
-#%{_bindir}/%{python}
-%if %{main_python}
-%{_bindir}/python2
-%endif
 %{_bindir}/python%{pybasever}
 %{_mandir}/*/*
 
@@ -1667,10 +1606,6 @@ CheckPython \
 %{_includedir}/python%{pybasever}/*.h
 %exclude %{_includedir}/python%{pybasever}/%{_pyconfig_h}
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
-%if %{main_python}
-%{_bindir}/python-config
-%{_bindir}/python2-config
-%endif
 %{_bindir}/python%{pybasever}-config
 %{_libdir}/libpython%{pybasever}.so
 %config(noreplace) %{_sysconfdir}/rpm/macros.python27
@@ -1722,10 +1657,6 @@ CheckPython \
 %defattr(-,root,root,-)
 
 # Analog of the core subpackage's files:
-#%{_bindir}/%{python}-debug
-%if %{main_python}
-%{_bindir}/python2-debug
-%endif
 %{_bindir}/python%{pybasever}-debug
 
 # Analog of the -libs subpackage's files, with debug builds of the built-in
@@ -1817,10 +1748,6 @@ CheckPython \
 %{_libdir}/pkgconfig/python2-debug.pc
 %{pylibdir}/config-debug/*
 %{_includedir}/python%{pybasever}-debug/*.h
-%if %{main_python}
-%{_bindir}/python-debug-config
-%{_bindir}/python2-debug-config
-%endif
 %{_bindir}/python%{pybasever}-debug-config
 %{_libdir}/libpython%{pybasever}_d.so
 
@@ -1856,6 +1783,9 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
+- Remove main_python conditionals
+
 * Mon Dec 19 2016 Carl George <carl.george@rackspace.com> - 2.7.13-1.ius
 - Latest upstream
 - Import patch102 from Fedora, and rebase it
