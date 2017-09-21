@@ -179,9 +179,7 @@ Source4: systemtap-example.stp
 # Written by dmalcolm; not yet sent upstream
 Source5: pyfuntop.stp
 
-# This defines a __python27_os_install_post macro, so that a specfile for a
-# module should merely need to redefine __os_install_post to this in order to
-# be byte-compiled using python2.7
+# RPM macros for building Python 2 packages.
 Source6: macros.python27
 
 # Modules/Setup.dist is ultimately used by the "makesetup" script to construct
@@ -1225,8 +1223,7 @@ sed -i -e "s/'pyconfig.h'/'%{_pyconfig_h}'/" \
   %{buildroot}%{pylibdir}/sysconfig.py
 
 # Install macros for rpm:
-mkdir -p %{buildroot}/%{_sysconfdir}/rpm
-install -m 644 %{SOURCE6} %{buildroot}/%{_sysconfdir}/rpm
+install -D -m 644 %{SOURCE6} %{buildroot}/%{rpmmacrodir}/macros.python27
 
 # Ensure that the curses module was linked against libncursesw.so, rather than
 # libncurses.so (bug 539917)
@@ -1500,7 +1497,7 @@ CheckPython \
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
 %{_bindir}/python%{pybasever}-config
 %{_libdir}/libpython%{pybasever}.so
-%config(noreplace) %{_sysconfdir}/rpm/macros.python27
+%{rpmmacrodir}/macros.python27
 
 %files tools
 %doc Tools/pynche/README.pynche
@@ -1673,6 +1670,7 @@ CheckPython \
 - Latest upstream
 - Use bundled expat
 - Rename tkinter27 to python27-tkinter
+- Implement macros for building python27 packages
 
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
