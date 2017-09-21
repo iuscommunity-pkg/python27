@@ -122,18 +122,7 @@
 # the rest of the build
 %global regenerate_autotooling_patch 0
 
-# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  This
-# symbol is used in pyexpat in order to mitigate CVE-2012-0876.  That symbol
-# was backported to el5/el6: https://rhn.redhat.com/errata/RHSA-2012-0731.html
-# However, el5's expat is missing other symbols that cause the build to fail.
-# We'll use the bundled expat on el5, and stock expat on el6.
-%if 0%{?rhel} >= 6
-%global with_system_expat 1
-%else
 %global with_system_expat 0
-%endif
-# Alternatively, we can build against expat21 from EPEL.
-#global with_epel_expat 1
 
 # ==================
 # Top-level metadata
@@ -159,15 +148,6 @@ Provides: python(abi) = %{pybasever}
 BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
-
-%if 0%{?with_epel_expat}
-BuildRequires: expat21-devel
-%else
-%if 0%{?with_system_expat}
-BuildRequires: expat-devel
-%endif # with_system_expat
-%endif # with_epel_expat
-
 %if 0%{?rhel} < 6
 BuildRequires: gcc44
 %endif
@@ -187,6 +167,12 @@ BuildRequires: openssl-devel
 BuildRequires: pkgconfig
 BuildRequires: readline-devel
 BuildRequires: sqlite-devel
+
+# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
+# it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
+%if 0%{?with_system_expat}
+BuildRequires: expat-devel >= 2.1.0
+%endif
 
 %if 0%{?with_systemtap}
 BuildRequires: systemtap-sdt-devel
@@ -654,9 +640,6 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
-# Optionally build against expat21 from EPEL.
-Patch204: python-2.7.9-expat21.patch
-
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -717,13 +700,13 @@ implementation is within the "python-libs" package.
 Summary: Runtime libraries for Python
 Group: Applications/System
 
-%if 0%{?with_epel_expat}
-Requires: expat21
-%else
+# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
+# this symbol (in pyexpat), so we must explicitly state this dependency to
+# prevent "import pyexpat" from failing with a linker error if someone hasn't
+# yet upgraded expat:
 %if 0%{?with_system_expat}
-Requires: expat
-%endif # with_system_expat
-%endif # with_epel_expat
+Requires: expat >= 2.1.0
+%endif
 
 %description libs
 This package contains runtime libraries for use by Python:
@@ -837,7 +820,7 @@ cp -a %{SOURCE5} .
 # Ensure that we're using the system copy of various libraries, rather than
 # copies shipped by upstream in the tarball:
 #   Remove embedded copy of expat:
-%if 0%{?with_system_expat} || 0%{?with_epel_expat}
+%if 0%{?with_system_expat}
 rm -r Modules/expat || exit 1
 %endif
 
@@ -922,10 +905,6 @@ done
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
 
-%if 0%{?with_epel_expat}
-%patch204 -p1
-%endif
-
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
 
@@ -951,11 +930,6 @@ if pkg-config openssl ; then
   export CFLAGS="$CFLAGS $(pkg-config --cflags openssl)"
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
-
-# Optionally build against expat21 from EPEL.
-%if 0%{?with_epel_expat}
-export CFLAGS="$CFLAGS -I%{_includedir}/expat21"
-%endif
 
 %if 0%{?rhel} && 0%{?rhel} < 6
 export CC="gcc44"
@@ -1027,7 +1001,7 @@ BuildPython() {
   --enable-shared \
   --enable-unicode=%{unicode} \
   --with-dbmliborder=gdbm:ndbm:bdb \
-%if 0%{?with_system_expat} || 0%{?with_epel_expat}
+%if 0%{?with_system_expat}
   --with-system-expat \
 %endif
   --with-system-ffi \
@@ -1782,6 +1756,7 @@ CheckPython \
 %changelog
 * Thu Sep 21 2017 Carl George <carl@george.computer> - 2.7.14-1.ius
 - Latest upstream
+- Use bundled expat
 
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
