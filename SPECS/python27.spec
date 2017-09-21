@@ -44,39 +44,6 @@
 %global with_gdbm 1
 
 
-# Redefine __os_install_post, removing the invocation of brp-python-bytecompile
-# (this is normally defined in /usr/lib/rpm/redhat/macros)
-#
-# brp-python-bytecompile is normally called without a parameter, which
-# effectively hardcodes the use of /usr/bin/python, leaving the .pyc/.pyo files
-# with an ABI version corresponding to the system python, rather than 2.7
-#
-# This can be checked with "hexdump -C".
-#
-# helper function:
-# py-magic-check(){ hexdump -C ${1} | awk 'NR==1{print $2,$3,$4,$5}'; }
-# py-magic-check /usr/lib64/python2.7/site.pyo
-#
-# results:
-# python2.4 > 6d f2 0d 0a
-# python2.6 > d1 f2 0d 0a
-# python2.7 > 03 f3 0d 0a
-# python3.1 > 4f 0c 0d 0a
-#
-# https://bugzilla.redhat.com/show_bug.cgi?id=531117
-# This was fixed by the time EL6 was released (rpm >= 4.7.1-8). Add the following
-# macro to fix the issue on EL5.
-#
-# %global __os_install_post %{__python27_os_install_post}
-
-%global __os_install_post    \
-    /usr/lib/rpm/redhat/brp-compress \
-    %{!?__debug_package:/usr/lib/rpm/redhat/brp-strip %{__strip}} \
-    /usr/lib/rpm/redhat/brp-strip-static-archive %{__strip} \
-    /usr/lib/rpm/redhat/brp-strip-comment-note %{__strip} %{__objdump} \
-    /usr/lib/rpm/redhat/brp-java-repack-jars \
-%{nil}
-
 # Turn this to 0 to turn off the "check" phase:
 %global run_selftest_suite 1
 
@@ -148,9 +115,6 @@ Provides: python(abi) = %{pybasever}
 BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
-%if 0%{?rhel} < 6
-BuildRequires: gcc44
-%endif
 BuildRequires: findutils
 BuildRequires: gcc-c++
 %if %{with_gdbm}
@@ -674,8 +638,6 @@ Patch5000: 05000-autotool-intermediates.patch
 # https://www.python.org/downloads/release/python-279/
 Obsoletes: %{python}-backports-ssl_match_hostname <= 3.4.0.2-3.ius%{?dist}
 
-%{?el5:BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)}
-
 URL: http://www.python.org/
 
 %description
@@ -930,14 +892,8 @@ if pkg-config openssl ; then
   export CFLAGS="$CFLAGS $(pkg-config --cflags openssl)"
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
-
-%if 0%{?rhel} && 0%{?rhel} < 6
-export CC="gcc44"
-export LINKCC="gcc44"
-%else
 export CC="gcc"
 export LINKCC="gcc"
-%endif
 
 %if 0%{regenerate_autotooling_patch}
 # If enabled, this code regenerates the patch to "configure", using a
@@ -980,23 +936,9 @@ BuildPython() {
   pushd $ConfDir
 
 # Use the freshly created "configure" script, but in the directory two above:
-%if 0%{?fedora} >= 14
   %global _configure $topdir/configure
-%else
-  %global configure $topdir/configure
-%endif
 
 %configure \
-%if 0%{?rhel} <= 6
-  --prefix=/usr \
-  --bindir=/usr/bin \
-  %if "%{_lib}" == "lib64"
-    --libdir=/usr/lib64 \
-  %else
-    --libdir=/usr/lib \
-  %endif # lib64
-  --sysconfdir=/etc \
-%endif # RHEL
   --enable-ipv6 \
   --enable-shared \
   --enable-unicode=%{unicode} \
@@ -1068,7 +1010,6 @@ BuildPython optimized \
 
 %install
 topdir=$(pwd)
-%{?el5:%{__rm} -rf %{buildroot}}
 mkdir -p %{buildroot}%{_prefix} %{buildroot}%{_mandir}
 
 # Clean up patched .py files that are saved as .lib64
@@ -1374,11 +1315,6 @@ CheckPython() {
   fi
 %endif
 
-%if 0%{?rhel} && 0%{?rhel} < 6
-  # test_sqlite fails on EL5
-  EXTRATESTOPTS="$EXTRATESTOPTS --exclude test_sqlite"
-%endif
-
   # Run the upstream test suite, setting "WITHIN_PYTHON_RPM_BUILD" so that the
   # our non-standard decorators take effect on the relevant tests:
   #   @unittest._skipInRpmBuild(reason)
@@ -1407,14 +1343,6 @@ CheckPython \
 
 
 # ======================================================
-# Cleaning up
-# ======================================================
-
-%{?el5:%clean}
-%{?el5:%{__rm} -rf %{buildroot}}
-
-
-# ======================================================
 # Scriptlets
 # ======================================================
 
@@ -1424,14 +1352,12 @@ CheckPython \
 
 
 %files
-%defattr(-, root, root, -)
 %doc LICENSE README
 %{_bindir}/python%{pybasever}
 %{_bindir}/python%{pybasever}-pydoc
 %{_mandir}/*/*
 
 %files libs
-%defattr(-,root,root,-)
 %doc LICENSE README
 %dir %{pylibdir}
 %dir %{dynload_dir}
@@ -1571,7 +1497,6 @@ CheckPython \
 %exclude %{pylibdir}/ensurepip/_bundled
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
 %{pylibdir}/config/*
 %exclude %{pylibdir}/config/Makefile
@@ -1584,7 +1509,6 @@ CheckPython \
 %config(noreplace) %{_sysconfdir}/rpm/macros.python27
 
 %files tools
-%defattr(-,root,root,755)
 %doc Tools/pynche/README.pynche
 %{site_packages}/pynche
 %{_bindir}/python%{pybasever}-smtpd.py
@@ -1598,12 +1522,10 @@ CheckPython \
 %{pylibdir}/Doc
 
 %files -n %{tkinter}
-%defattr(-,root,root,755)
 %{pylibdir}/lib-tk
 %{dynload_dir}/_tkinter.so
 
 %files test
-%defattr(-, root, root, -)
 %{pylibdir}/bsddb/test
 %{pylibdir}/ctypes/test
 %{pylibdir}/distutils/tests
@@ -1627,7 +1549,6 @@ CheckPython \
 
 %if 0%{?with_debug_build}
 %files debug
-%defattr(-,root,root,-)
 
 # Analog of the core subpackage's files:
 %{_bindir}/python%{pybasever}-debug
