@@ -141,8 +141,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.13
-Release: 2.ius%{?dist}
+Version: 2.7.14
+Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -453,7 +453,7 @@ Patch111: 00111-no-static-lib.patch
 #
 #  See also patch 130 below
 #
-Patch112: python-2.7.3-debug-build.patch
+Patch112: 00112-debug-build.patch
 
 
 # 00113 #
@@ -653,9 +653,6 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # very large uid/gid values are round-trippable, and -1 remains usable.
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
-
-#Workaround for ENOPROTOOPT seen in Koji and other build systems withi test.support.bind_port()
-Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 
 # Optionally build against expat21 from EPEL.
 Patch204: python-2.7.9-expat21.patch
@@ -920,11 +917,10 @@ done
 %endif
 %patch146 -p1
 %patch147 -p1
-%patch153 -p0
+%patch153 -p1
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
-%patch173 -p1
 
 %if 0%{?with_epel_expat}
 %patch204 -p1
@@ -1784,6 +1780,9 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Thu Sep 21 2017 Carl George <carl@george.computer> - 2.7.14-1.ius
+- Latest upstream
+
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
 - Rename *27 commands to python2.7-*

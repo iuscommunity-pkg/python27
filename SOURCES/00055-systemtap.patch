@@ -1,7 +1,7 @@
-diff -Naurp a/configure.ac b/configure.ac
---- a/configure.ac	2014-12-10 10:00:00.000000000 -0600
-+++ b/configure.ac	2014-12-11 11:50:24.803816866 -0600
-@@ -2839,6 +2839,38 @@ if test "$with_valgrind" != no; then
+diff -Nurp Python-2.7.14.orig/configure.ac Python-2.7.14/configure.ac
+--- Python-2.7.14.orig/configure.ac	2017-09-16 12:38:35.000000000 -0500
++++ Python-2.7.14/configure.ac	2017-09-18 10:29:02.703342692 -0500
+@@ -3013,6 +3013,38 @@ if test "$with_valgrind" != no; then
      )
  fi
  
@@ -40,9 +40,9 @@ diff -Naurp a/configure.ac b/configure.ac
  # Check for --with-wctype-functions
  AC_MSG_CHECKING(for --with-wctype-functions)
  AC_ARG_WITH(wctype-functions, 
-diff -Naurp a/Include/pydtrace.d b/Include/pydtrace.d
---- a/Include/pydtrace.d	2014-12-11 11:06:42.611145678 -0600
-+++ b/Include/pydtrace.d	2014-12-11 11:49:40.466478720 -0600
+diff -Nurp Python-2.7.14.orig/Include/pydtrace.d Python-2.7.14/Include/pydtrace.d
+--- Python-2.7.14.orig/Include/pydtrace.d	1969-12-31 18:00:00.000000000 -0600
++++ Python-2.7.14/Include/pydtrace.d	2017-09-18 10:29:02.704342692 -0500
 @@ -0,0 +1,10 @@
 +provider python {
 +	probe function__entry(const char *, const char *, int);
@@ -54,10 +54,10 @@ diff -Naurp a/Include/pydtrace.d b/Include/pydtrace.d
 +#pragma D attributes Private/Private/Common provider python function
 +#pragma D attributes Evolving/Evolving/Common provider python name
 +#pragma D attributes Evolving/Evolving/Common provider python args
-diff -Naurp a/Makefile.pre.in b/Makefile.pre.in
---- a/Makefile.pre.in	2014-12-10 09:59:50.000000000 -0600
-+++ b/Makefile.pre.in	2014-12-11 11:52:24.242018154 -0600
-@@ -344,6 +344,7 @@ PYTHON_OBJS=	\
+diff -Nurp Python-2.7.14.orig/Makefile.pre.in Python-2.7.14/Makefile.pre.in
+--- Python-2.7.14.orig/Makefile.pre.in	2017-09-16 12:38:35.000000000 -0500
++++ Python-2.7.14/Makefile.pre.in	2017-09-18 10:29:55.163337093 -0500
+@@ -337,6 +337,7 @@ PYTHON_OBJS=	\
  		Python/formatter_unicode.o \
  		Python/formatter_string.o \
  		Python/$(DYNLOADFILE) \
@@ -65,7 +65,7 @@ diff -Naurp a/Makefile.pre.in b/Makefile.pre.in
  		$(LIBOBJS) \
  		$(MACHDEP_OBJS) \
  		$(THREADOBJ)
-@@ -677,6 +678,18 @@ Python/formatter_unicode.o: $(srcdir)/Py
+@@ -739,6 +740,18 @@ Python/formatter_unicode.o: $(srcdir)/Py
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -84,19 +84,19 @@ diff -Naurp a/Makefile.pre.in b/Makefile.pre.in
  ############################################################################
  # Header files
  
-@@ -1393,7 +1406,7 @@ Python/thread.o: @THREADHEADERS@
+@@ -1470,7 +1483,7 @@ Python/thread.o: @THREADHEADERS@
  .PHONY: frameworkinstall frameworkinstallframework frameworkinstallstructure
  .PHONY: frameworkinstallmaclib frameworkinstallapps frameworkinstallunixtools
- .PHONY: frameworkaltinstallunixtools recheck autoconf clean clobber distclean
--.PHONY: smelly funny patchcheck touch altmaninstall commoninstall
-+.PHONY: smelly funny patchcheck touch altmaninstall commoninstall buildinclude
+ .PHONY: frameworkaltinstallunixtools recheck clean clobber distclean
+-.PHONY: smelly funny patchcheck altmaninstall commoninstall
++.PHONY: smelly funny patchcheck altmaninstall commoninstall buildinclude
  .PHONY: gdbhooks
  
  # IF YOU PUT ANYTHING HERE IT WILL GO AWAY
-diff -Naurp a/pyconfig.h.in b/pyconfig.h.in
---- a/pyconfig.h.in	2014-12-10 10:00:01.000000000 -0600
-+++ b/pyconfig.h.in	2014-12-11 11:53:34.977955437 -0600
-@@ -1104,6 +1104,9 @@
+diff -Nurp Python-2.7.14.orig/pyconfig.h.in Python-2.7.14/pyconfig.h.in
+--- Python-2.7.14.orig/pyconfig.h.in	2017-09-16 12:38:35.000000000 -0500
++++ Python-2.7.14/pyconfig.h.in	2017-09-18 10:29:02.707342692 -0500
+@@ -1115,6 +1115,9 @@
  /* Define if you want documentation strings in extension modules */
  #undef WITH_DOC_STRINGS
  
@@ -106,9 +106,9 @@ diff -Naurp a/pyconfig.h.in b/pyconfig.h.in
  /* Define if you want to use the new-style (Openstep, Rhapsody, MacOS) dynamic
     linker (dyld) instead of the old-style (NextStep) dynamic linker (rld).
     Dyld is necessary to support frameworks. */
-diff -Naurp a/Python/ceval.c b/Python/ceval.c
---- a/Python/ceval.c	2014-12-10 09:59:58.000000000 -0600
-+++ b/Python/ceval.c	2014-12-11 11:56:21.441454355 -0600
+diff -Nurp Python-2.7.14.orig/Python/ceval.c Python-2.7.14/Python/ceval.c
+--- Python-2.7.14.orig/Python/ceval.c	2017-09-16 12:38:35.000000000 -0500
++++ Python-2.7.14/Python/ceval.c	2017-09-18 10:29:02.734342689 -0500
 @@ -19,6 +19,10 @@
  
  #include <ctype.h>
@@ -120,7 +120,7 @@ diff -Naurp a/Python/ceval.c b/Python/ceval.c
  #ifndef WITH_TSC
  
  #define READ_TIMESTAMP(var)
-@@ -672,6 +676,55 @@ PyEval_EvalCode(PyCodeObject *co, PyObje
+@@ -674,6 +678,55 @@ PyEval_EvalCode(PyCodeObject *co, PyObje
                        NULL);
  }
  
@@ -176,7 +176,7 @@ diff -Naurp a/Python/ceval.c b/Python/ceval.c
  
  /* Interpreter main loop */
  
-@@ -910,6 +963,9 @@ PyEval_EvalFrameEx(PyFrameObject *f, int
+@@ -1009,6 +1062,9 @@ PyEval_EvalFrameEx(PyFrameObject *f, int
          }
      }
  
@@ -186,7 +186,7 @@ diff -Naurp a/Python/ceval.c b/Python/ceval.c
      co = f->f_code;
      names = co->co_names;
      consts = co->co_consts;
-@@ -3014,6 +3070,9 @@ fast_yield:
+@@ -3338,6 +3394,9 @@ fast_yield:
  
      /* pop frame */
  exit_eval_frame:
