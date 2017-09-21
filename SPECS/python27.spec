@@ -2,10 +2,8 @@
 # Conditionals and other variables controlling the build
 # ======================================================
 
-%global __python_ver 27
 %global unicode ucs4
-%global python python%{__python_ver}
-%global tkinter tkinter%{__python_ver}
+%global python python27
 %global pybasever 2.7
 %global pylibdir %{_libdir}/python%{pybasever}
 %global tools_dir %{pylibdir}/Tools
@@ -35,7 +33,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifarch %{ix86} x86_64 ppc %{power64} s390x
+%ifnarch s390 %{mips} riscv64
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -102,7 +100,6 @@ Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
-Provides: python-abi = %{pybasever}
 Provides: python(abi) = %{pybasever}
 
 
@@ -115,28 +112,30 @@ Provides: python(abi) = %{pybasever}
 BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
-BuildRequires: findutils
-BuildRequires: gcc-c++
-%if %{with_gdbm}
-BuildRequires: gdbm-devel
-%endif
 BuildRequires: glibc-devel
 BuildRequires: gmp-devel
 BuildRequires: db4-devel
 BuildRequires: libffi-devel
-BuildRequires: libGL-devel
-BuildRequires: libX11-devel
 BuildRequires: ncurses-devel
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
 BuildRequires: readline-devel
 BuildRequires: sqlite-devel
+BuildRequires: tcl-devel
 
 # expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
 # it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
 %if 0%{?with_system_expat}
 BuildRequires: expat-devel >= 2.1.0
 %endif
+
+BuildRequires: findutils
+BuildRequires: gcc-c++
+%if %{with_gdbm}
+BuildRequires: gdbm-devel
+%endif
+BuildRequires: libGL-devel
+BuildRequires: libX11-devel
 
 %if 0%{?with_systemtap}
 BuildRequires: systemtap-sdt-devel
@@ -146,7 +145,6 @@ BuildRequires: systemtap-sdt-devel
 %endif # with_systemtap
 
 BuildRequires: tar
-BuildRequires: tcl-devel
 BuildRequires: tix-devel
 BuildRequires: tk-devel
 
@@ -200,36 +198,36 @@ Source6: macros.python27
 #   we built them as shared libraries
 #   - build the "readline" module (appears to also be handled by setup.py now)
 #   - enable the build of the following modules:
-#     - array arraymodule.c # array objects
+#     - array arraymodule.c	# array objects
 #     - cmath cmathmodule.c # -lm # complex math library functions
 #     - math mathmodule.c # -lm # math library functions, e.g. sin()
-#     - _struct _struct.c # binary structure packing/unpacking
+#     - _struct _struct.c	# binary structure packing/unpacking
 #     - time timemodule.c # -lm # time operations and variables
-#     - operator operator.c # operator.add() and similar goodies
-#     - _weakref _weakref.c # basic weak reference support
+#     - operator operator.c	# operator.add() and similar goodies
+#     - _weakref _weakref.c	# basic weak reference support
 #     - _testcapi _testcapimodule.c    # Python C API test module
-#     - _random _randommodule.c # Random number generator
+#     - _random _randommodule.c	# Random number generator
 #     - _collections _collectionsmodule.c # Container types
 #     - itertools itertoolsmodule.c
 #     - strop stropmodule.c
 #     - _functools _functoolsmodule.c
-#     - _bisect _bisectmodule.c # Bisection algorithms
+#     - _bisect _bisectmodule.c	# Bisection algorithms
 #     - unicodedata unicodedata.c    # static Unicode character database
 #     - _locale _localemodule.c
-#     - fcntl fcntlmodule.c # fcntl(2) and ioctl(2)
-#     - spwd spwdmodule.c # spwd(3)
-#     - grp grpmodule.c # grp(3)
-#     - select selectmodule.c # select(2); not on ancient System V
+#     - fcntl fcntlmodule.c	# fcntl(2) and ioctl(2)
+#     - spwd spwdmodule.c		# spwd(3)
+#     - grp grpmodule.c		# grp(3)
+#     - select selectmodule.c	# select(2); not on ancient System V
 #     - mmap mmapmodule.c  # Memory-mapped files
 #     - _csv _csv.c  # CSV file helper
 #     - _socket socketmodule.c  # Socket module helper for socket(2)
 #     - _ssl _ssl.c
-#     - crypt cryptmodule.c -lcrypt # crypt(3)
-#     - nis nismodule.c -lnsl # Sun yellow pages -- not everywhere
-#     - termios termios.c # Steen Lumholt's termios module
-#     - resource resource.c # Jeremy Hylton's rlimit interface
-#     - audioop audioop.c # Operations on audio samples
-#     - imageop imageop.c # Operations on images
+#     - crypt cryptmodule.c -lcrypt	# crypt(3)
+#     - nis nismodule.c -lnsl	# Sun yellow pages -- not everywhere
+#     - termios termios.c	# Steen Lumholt's termios module
+#     - resource resource.c	# Jeremy Hylton's rlimit interface
+#     - audioop audioop.c	# Operations on audio samples
+#     - imageop imageop.c	# Operations on images
 #     - _md5 md5module.c md5.c
 #     - _sha shamodule.c
 #     - _sha256 sha256module.c
@@ -606,23 +604,12 @@ Patch157: 00157-uid-gid-overflows.patch
 
 # (New patches go here ^^^)
 #
-# When adding new patches to "python" and "python3" in Fedora 17 onwards,
-# please try to keep the patch numbers in-sync between the two specfiles:
+# When adding new patches to "python2" and "python3" in Fedora, EL, etc.,
+# please try to keep the patch numbers in-sync between all specfiles.
 #
-#   - use the same patch number across both specfiles for conceptually-equivalent
-#     fixes, ideally with the same name
+# More information, and a patch number catalog, is at:
 #
-#   - when a patch is relevant to both specfiles, use the same introductory
-#     comment in both specfiles where possible (to improve "diff" output when
-#     comparing them)
-#
-#   - when a patch is only relevant for one of the two specfiles, leave a gap
-#     in the patch numbering in the other specfile, adding a comment when
-#     omitting a patch, both in the manifest section here, and in the "prep"
-#     phase below
-#
-# Hopefully this will make it easier to ensure that all relevant fixes are
-# applied to both versions.
+#     https://fedoraproject.org/wiki/SIGs/Python/PythonPatches
 
 # This is the generated patch to "configure"; see the description of
 #   %{regenerate_autotooling_patch}
@@ -638,7 +625,7 @@ Patch5000: 05000-autotool-intermediates.patch
 # https://www.python.org/downloads/release/python-279/
 Obsoletes: %{python}-backports-ssl_match_hostname <= 3.4.0.2-3.ius%{?dist}
 
-URL: http://www.python.org/
+URL: https://www.python.org/
 
 %description
 Python is an interpreted, interactive, object-oriented programming
@@ -891,13 +878,14 @@ export CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
 export CXXFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
 export CPPFLAGS="$(pkg-config --cflags-only-I libffi)"
 export OPT="$RPM_OPT_FLAGS -D_GNU_SOURCE -fPIC -fwrapv"
+export LINKCC="gcc"
 export LDFLAGS="$RPM_LD_FLAGS"
 if pkg-config openssl ; then
   export CFLAGS="$CFLAGS $(pkg-config --cflags openssl)"
   export LDFLAGS="$LDFLAGS $(pkg-config --libs-only-L openssl)"
 fi
-export CC="gcc"
-export LINKCC="gcc"
+# Force CC
+export CC=gcc
 
 %if 0%{regenerate_autotooling_patch}
 # If enabled, this code regenerates the patch to "configure", using a
@@ -939,7 +927,7 @@ BuildPython() {
 
   pushd $ConfDir
 
-# Use the freshly created "configure" script, but in the directory two above:
+  # Use the freshly created "configure" script, but in the directory two above:
   %global _configure $topdir/configure
 
 %configure \
@@ -1356,13 +1344,15 @@ CheckPython \
 
 
 %files
-%doc LICENSE README
+%license LICENSE
+%doc README
 %{_bindir}/python%{pybasever}
 %{_bindir}/python%{pybasever}-pydoc
 %{_mandir}/*/*
 
 %files libs
-%doc LICENSE README
+%license LICENSE
+%doc README
 %dir %{pylibdir}
 %dir %{dynload_dir}
 %{dynload_dir}/Python-%{version}-py%{pybasever}.egg-info
