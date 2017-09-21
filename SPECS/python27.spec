@@ -700,19 +700,23 @@ documentation.
 Summary: A collection of development tools included with Python
 Group: Development/Tools
 Requires: %{name} = %{version}-%{release}
-Requires: %{tkinter} = %{version}-%{release}
+Requires: %{name}-tkinter = %{version}-%{release}
 
 %description tools
 This package includes several tools to help with the development of Python
 programs, including IDLE (an IDE with editing and debugging facilities), a
 color editor (pynche), and a python gettext program (pygettext.py).
 
-%package -n %{tkinter}
+%package tkinter
 Summary: A graphical user interface for the Python scripting language
 Group: Development/Languages
 Requires: %{name} = %{version}-%{release}
+# rename from tkinter27 to python27-tkinter
+Provides: tkinter27 = %{version}-%{release}
+Provides: tkinter27%{?_isa} = %{version}-%{release}
+Obsoletes: tkinter27 < 2.7.13-3
 
-%description -n %{tkinter}
+%description tkinter
 The Tkinter (Tk interface) program is an graphical user interface for
 the Python scripting language.
 
@@ -744,7 +748,7 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 Requires: %{name}-devel%{?_isa} = %{version}-%{release}
 Requires: %{name}-test%{?_isa} = %{version}-%{release}
-Requires: %{tkinter}%{?_isa} = %{version}-%{release}
+Requires: %{name}-tkinter%{?_isa} = %{version}-%{release}
 Requires: %{name}-tools%{?_isa} = %{version}-%{release}
 
 %description debug
@@ -1521,7 +1525,7 @@ CheckPython \
 %{demo_dir}
 %{pylibdir}/Doc
 
-%files -n %{tkinter}
+%files tkinter
 %{pylibdir}/lib-tk
 %{dynload_dir}/_tkinter.so
 
@@ -1678,6 +1682,7 @@ CheckPython \
 * Thu Sep 21 2017 Carl George <carl@george.computer> - 2.7.14-1.ius
 - Latest upstream
 - Use bundled expat
+- Rename tkinter27 to python27-tkinter
 
 * Mon Mar 27 2017 Carl George <carl.george@rackspace.com> - 2.7.13-2.ius
 - Remove main_python conditionals
