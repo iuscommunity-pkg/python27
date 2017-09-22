@@ -600,6 +600,14 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
+# 00900 #
+# Python 2.7.14 introduced the test_regrtest module, which includes a
+# test_huntrleaks method.  You would think that method would only be run if
+# `--huntrleaks` is specified, but you would be wrong.
+# https://github.com/python/cpython/pull/1513
+# https://github.com/python/cpython/pull/2444
+Patch900: 00900-skip-huntrleaks.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python2" and "python3" in Fedora, EL, etc.,
@@ -855,6 +863,9 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
+%if ! 0%{?with_huntrleaks}
+%patch900 -p1
+%endif
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
