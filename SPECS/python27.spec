@@ -576,6 +576,11 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
+# 00901 #
+# Fix test_ssl when a filename cannot be encoded.
+# https://github.com/python/cpython/commit/19f6bd06af3c7fc0db5f96878aaa68f5589ff13e
+Patch901: 00901-fix-test_ssl-when-a-filename-cannot-be-encoded.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python2" and "python3" in Fedora, EL, etc.,
@@ -827,6 +832,7 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
+%patch901 -p1
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -1640,6 +1646,7 @@ CheckPython \
 %changelog
 * Fri Aug 17 2018 Carl George <carl@george.computer> - 2.7.15-1.ius
 - Latest upstream
+- Add patch901 to fix test_ssl when a filename cannot be encoded
 
 * Thu Sep 21 2017 Carl George <carl@george.computer> - 2.7.14-1.ius
 - Latest upstream
