@@ -94,8 +94,7 @@
 # ==================
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
-# Remember to also rebase python-docs when changing this:
-Version: 2.7.14
+Version: 2.7.15
 Release: 1.ius%{?dist}
 License: Python
 Group: Development/Languages
@@ -431,14 +430,6 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 # This patch adds the build Modules directory to build path.
 Patch121: 00121-add-Modules-to-build-path.patch
 
-# 00125 #
-# COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
-# emitting debug info to stdout on exit is too verbose and makes it harder to
-# use the debug build.  Add a "PYTHONDUMPCOUNTS" environment variable which
-# must be set to enable the output on exit
-# Not yet sent upstream
-Patch125: 00125-less-verbose-COUNT_ALLOCS.patch
-
 # 2.7.1 (in r84230) added a test to test_abc which fails if python is
 # configured with COUNT_ALLOCS, which is the case for our debug build
 # (the COUNT_ALLOCS instrumentation keeps "C" alive).
@@ -487,16 +478,6 @@ Patch132: 00132-add-rpmbuild-hooks-to-unittest.patch
 # "dl" is deprecated, and test_dl doesn't work on 64-bit builds:
 Patch133: 00133-skip-test_dl.patch
 
-# 00134 #
-# Fix a failure in test_sys.py when configured with COUNT_ALLOCS enabled
-# Not yet sent upstream
-Patch134: 00134-fix-COUNT_ALLOCS-failure-in-test_sys.patch
-
-# 00135 #
-# Skip "test_callback_in_cycle_resurrection" in a debug build, where it fails:
-# Not yet sent upstream
-Patch135: 00135-skip-test-within-test_weakref-in-debug-build.patch
-
 # 00136 #
 # Some tests try to seek on sys.stdin, but don't work as expected when run
 # within Koji/mock; skip them within the rpm build:
@@ -520,11 +501,6 @@ Patch139: 00139-skip-test_float-known-failure-on-arm.patch
 #  http://bugs.python.org/issue8314 (rhbz#711584)
 # which appears to be a libffi bug
 Patch140: 00140-skip-test_ctypes-known-failure-on-sparc.patch
-
-# 00141 #
-# Fix test_gc's test_newinstance case when configured with COUNT_ALLOCS:
-# Not yet sent upstream
-Patch141: 00141-fix-test_gc_with_COUNT_ALLOCS.patch
 
 # 00142 #
 # Some pty tests fail when run in mock (rhbz#714627):
@@ -599,14 +575,6 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # very large uid/gid values are round-trippable, and -1 remains usable.
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
-
-# 00900 #
-# Python 2.7.14 introduced the test_regrtest module, which includes a
-# test_huntrleaks method.  You would think that method would only be run if
-# `--huntrleaks` is specified, but you would be wrong.
-# https://github.com/python/cpython/pull/1513
-# https://github.com/python/cpython/pull/2444
-Patch900: 00900-skip-huntrleaks.patch
 
 # (New patches go here ^^^)
 #
@@ -830,7 +798,6 @@ done
 %patch113 -p1 -b .more-configuration-flags
 %patch114 -p1 -b .statvfs-f-flag-constants
 %patch121 -p1
-%patch125 -p1 -b .less-verbose-COUNT_ALLOCS
 %patch128 -p1
 %patch130 -p1
 
@@ -840,8 +807,6 @@ done
 
 %patch132 -p1
 %patch133 -p1
-%patch134 -p1
-%patch135 -p1
 %patch136 -p1
 %patch137 -p1
 %patch138 -p1
@@ -851,7 +816,6 @@ done
 %ifarch %{sparc}
 %patch140 -p1
 %endif
-%patch141 -p1
 %patch142 -p1
 %patch143 -p1 -b .tsc-on-ppc
 %if !%{with_gdbm}
@@ -863,9 +827,6 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
-%if ! 0%{?with_huntrleaks}
-%patch900 -p1
-%endif
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -1677,6 +1638,9 @@ CheckPython \
 # ======================================================
 
 %changelog
+* Fri Aug 17 2018 Carl George <carl@george.computer> - 2.7.15-1.ius
+- Latest upstream
+
 * Thu Sep 21 2017 Carl George <carl@george.computer> - 2.7.14-1.ius
 - Latest upstream
 - Use bundled expat

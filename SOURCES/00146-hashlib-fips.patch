@@ -1,6 +1,6 @@
-diff -Naurp a/Lib/hashlib.py b/Lib/hashlib.py
---- a/Lib/hashlib.py	2016-12-17 14:05:06.000000000 -0600
-+++ b/Lib/hashlib.py	2016-12-19 12:43:15.877842846 -0600
+diff -Nurp Python-2.7.15.orig/Lib/hashlib.py Python-2.7.15/Lib/hashlib.py
+--- Python-2.7.15.orig/Lib/hashlib.py	2018-04-29 17:47:33.000000000 -0500
++++ Python-2.7.15/Lib/hashlib.py	2018-08-14 14:40:41.633115725 -0500
 @@ -6,9 +6,12 @@
  
  __doc__ = """hashlib module - A common interface to many hash functions.
@@ -38,7 +38,7 @@ diff -Naurp a/Lib/hashlib.py b/Lib/hashlib.py
  Hash objects have these methods:
   - update(arg): Update the hash object with the string arg. Repeated calls
                  are equivalent to a single call with the concatenation of all
-@@ -69,66 +86,31 @@ __all__ = __always_supported + ('new', '
+@@ -69,65 +86,32 @@ __all__ = __always_supported + ('new', '
                                  'pbkdf2_hmac')
  
  
@@ -85,16 +85,16 @@ diff -Naurp a/Lib/hashlib.py b/Lib/hashlib.py
          return f
      except (AttributeError, ValueError):
 -        return __get_builtin_constructor(name)
-+        raise
- 
+-
 -
 -def __py_new(name, string=''):
 -    """new(name, string='') - Return a new hashing object using the named algorithm;
 -    optionally initialized with a string.
 -    """
 -    return __get_builtin_constructor(name)(string)
--
--
++        raise
+ 
+ 
 -def __hash_new(name, string=''):
 +def __hash_new(name, string='', usedforsecurity=True):
      """new(name, string='') - Return a new hashing object using the named algorithm;
@@ -111,12 +111,11 @@ diff -Naurp a/Lib/hashlib.py b/Lib/hashlib.py
 -        # This allows for SHA224/256 and SHA384/512 support even though
 -        # the OpenSSL library prior to 0.9.8 doesn't provide them.
 -        return __get_builtin_constructor(name)(string)
--
 +        raise
  
+ 
  try:
-     import _hashlib
-@@ -137,8 +119,8 @@ try:
+@@ -137,8 +121,8 @@ try:
      algorithms_available = algorithms_available.union(
          _hashlib.openssl_md_meth_names)
  except ImportError:
@@ -127,18 +126,18 @@ diff -Naurp a/Lib/hashlib.py b/Lib/hashlib.py
  
  for __func_name in __always_supported:
      # try them all, some may not work due to the OpenSSL
-@@ -218,4 +200,4 @@ except ImportError:
+@@ -218,4 +202,4 @@ except ImportError:
  
  # Cleanup locals()
  del __always_supported, __func_name, __get_hash
 -del __py_new, __hash_new, __get_openssl_constructor
 +del __hash_new, __get_openssl_constructor
-diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
---- a/Lib/test/test_hashlib.py	2016-12-17 14:05:06.000000000 -0600
-+++ b/Lib/test/test_hashlib.py	2016-12-19 12:43:15.878842875 -0600
-@@ -34,6 +34,19 @@ def hexstr(s):
-         r = r + h[(i >> 4) & 0xF] + h[i & 0xF]
+diff -Nurp Python-2.7.15.orig/Lib/test/test_hashlib.py Python-2.7.15/Lib/test/test_hashlib.py
+--- Python-2.7.15.orig/Lib/test/test_hashlib.py	2018-04-29 17:47:33.000000000 -0500
++++ Python-2.7.15/Lib/test/test_hashlib.py	2018-08-14 14:52:48.579424678 -0500
+@@ -35,6 +35,21 @@ def hexstr(s):
      return r
+ 
  
 +def openssl_enforces_fips():
 +    # Use the "openssl" command (if present) to try to determine if the local
@@ -153,10 +152,12 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
 +    stdout, stderr = p.communicate(input=b'abc')
 +    return b'unknown cipher' in stderr
 +OPENSSL_ENFORCES_FIPS = openssl_enforces_fips()
- 
++
++
  class HashLibTestCase(unittest.TestCase):
      supported_hash_names = ( 'md5', 'MD5', 'sha1', 'SHA1',
-@@ -63,10 +76,10 @@ class HashLibTestCase(unittest.TestCase)
+                              'sha224', 'SHA224', 'sha256', 'SHA256',
+@@ -63,10 +78,10 @@ class HashLibTestCase(unittest.TestCase)
          # of hashlib.new given the algorithm name.
          for algorithm, constructors in self.constructors_to_test.items():
              constructors.add(getattr(hashlib, algorithm))
@@ -170,7 +171,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
              constructors.add(_test_algorithm_via_hashlib_new)
  
          _hashlib = self._conditional_import_module('_hashlib')
-@@ -80,28 +93,13 @@ class HashLibTestCase(unittest.TestCase)
+@@ -80,28 +95,13 @@ class HashLibTestCase(unittest.TestCase)
                  if constructor:
                      constructors.add(constructor)
  
@@ -200,7 +201,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
              c.hexdigest()
  
      def test_algorithms_attribute(self):
-@@ -122,28 +120,9 @@ class HashLibTestCase(unittest.TestCase)
+@@ -122,28 +122,9 @@ class HashLibTestCase(unittest.TestCase)
          self.assertRaises(ValueError, hashlib.new, 'spam spam spam spam spam')
          self.assertRaises(TypeError, hashlib.new, 1)
  
@@ -230,7 +231,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
              self.assertTrue(hexstr(h.digest()) == h.hexdigest())
  
      def test_large_update(self):
-@@ -153,16 +132,16 @@ class HashLibTestCase(unittest.TestCase)
+@@ -153,16 +134,16 @@ class HashLibTestCase(unittest.TestCase)
          abcs = aas + bees + cees
  
          for name in self.supported_hash_names:
@@ -250,7 +251,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
              self.assertEqual(m1.digest(), m3.digest(), name+' new problem.')
  
      def check(self, name, data, digest):
-@@ -170,7 +149,7 @@ class HashLibTestCase(unittest.TestCase)
+@@ -170,7 +151,7 @@ class HashLibTestCase(unittest.TestCase)
          # 2 is for hashlib.name(...) and hashlib.new(name, ...)
          self.assertGreaterEqual(len(constructors), 2)
          for hash_object_constructor in constructors:
@@ -259,7 +260,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
              self.assertEqual(
                      computed, digest,
                      "Hash algorithm %s constructed using %s returned hexdigest"
-@@ -195,7 +174,8 @@ class HashLibTestCase(unittest.TestCase)
+@@ -195,7 +176,8 @@ class HashLibTestCase(unittest.TestCase)
  
      def check_unicode(self, algorithm_name):
          # Unicode objects are not allowed as input.
@@ -269,7 +270,7 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
          self.check(algorithm_name, u'spam', expected)
  
      def test_unicode(self):
-@@ -394,6 +374,70 @@ class HashLibTestCase(unittest.TestCase)
+@@ -394,6 +376,70 @@ class HashLibTestCase(unittest.TestCase)
          self.assertEqual(expected_hash, hasher.hexdigest())
  
  
@@ -340,9 +341,9 @@ diff -Naurp a/Lib/test/test_hashlib.py b/Lib/test/test_hashlib.py
  class KDFTests(unittest.TestCase):
      pbkdf2_test_vectors = [
          (b'password', b'salt', 1, None),
-diff -Naurp a/Modules/Setup.dist b/Modules/Setup.dist
---- a/Modules/Setup.dist	2016-12-19 12:43:01.190415147 -0600
-+++ b/Modules/Setup.dist	2016-12-19 12:43:15.879842904 -0600
+diff -Nurp Python-2.7.15.orig/Modules/Setup.dist Python-2.7.15/Modules/Setup.dist
+--- Python-2.7.15.orig/Modules/Setup.dist	2018-08-14 10:49:10.307387590 -0500
++++ Python-2.7.15/Modules/Setup.dist	2018-08-14 14:55:46.522981408 -0500
 @@ -252,14 +252,14 @@ imageop imageop.c	# Operations on images
  # Message-Digest Algorithm, described in RFC 1321.  The necessary files
  # md5.c and md5.h are included here.
@@ -362,9 +363,9 @@ diff -Naurp a/Modules/Setup.dist b/Modules/Setup.dist
  
  
  # SGI IRIX specific modules -- off by default.
-diff -Naurp a/setup.py b/setup.py
---- a/setup.py	2016-12-19 12:24:29.189029838 -0600
-+++ b/setup.py	2016-12-19 12:43:15.879842904 -0600
+diff -Nurp Python-2.7.15.orig/setup.py Python-2.7.15/setup.py
+--- Python-2.7.15.orig/setup.py	2018-08-14 10:49:10.307387590 -0500
++++ Python-2.7.15/setup.py	2018-08-14 14:57:19.451272156 -0500
 @@ -874,21 +874,6 @@ class PyBuildExt(build_ext):
                  print ("warning: openssl 0x%08x is too old for _hashlib" %
                         openssl_ver)
@@ -387,9 +388,9 @@ diff -Naurp a/setup.py b/setup.py
  
          # Modules that provide persistent dictionary-like semantics.  You will
          # probably want to arrange for at least one of them to be available on
-diff -Naurp a/Modules/_hashopenssl.c b/Modules/_hashopenssl.c
---- a/Modules/_hashopenssl.c	2016-12-17 14:05:07.000000000 -0600
-+++ b/Modules/_hashopenssl.c	2016-12-19 16:11:02.618747587 -0600
+diff -Nurp Python-2.7.15.orig/Modules/_hashopenssl.c Python-2.7.15/Modules/_hashopenssl.c
+--- Python-2.7.15.orig/Modules/_hashopenssl.c	2018-04-29 17:47:33.000000000 -0500
++++ Python-2.7.15/Modules/_hashopenssl.c	2018-08-14 15:40:05.345201906 -0500
 @@ -36,6 +36,8 @@
  #endif
  
@@ -606,8 +607,8 @@ diff -Naurp a/Modules/_hashopenssl.c b/Modules/_hashopenssl.c
 +        return implement_specific_EVP_new(self, args, kwdict,       \
 +                                          "|s*i:" #NAME,            \
 +                                          &cached_info_ ## NAME );  \
-     }
- 
++    }
++
 +static PyObject *
 +implement_specific_EVP_new(PyObject *self, PyObject *args, PyObject *kwdict,
 +                           const char *format,
@@ -624,8 +625,8 @@ diff -Naurp a/Modules/_hashopenssl.c b/Modules/_hashopenssl.c
 +    if (!PyArg_ParseTupleAndKeywords(args, kwdict, format, kwlist,
 +                                     &view, &usedforsecurity)) {
 +        return NULL;
-+    }
-+
+     }
+ 
 +    idx = usedforsecurity ? 1 : 0;
 +
 +    /*
@@ -712,14 +713,18 @@ diff -Naurp a/Modules/_hashopenssl.c b/Modules/_hashopenssl.c
  GEN_CONSTRUCTOR(md5)
  GEN_CONSTRUCTOR(sha1)
  #ifdef _OPENSSL_SUPPORTS_SHA2
-@@ -899,14 +1032,11 @@ init_hashlib(void)
+@@ -899,17 +1032,15 @@ init_hashlib(void)
  {
      PyObject *m, *openssl_md_meth_names;
  
 +    SSL_load_error_strings();
 +    SSL_library_init();
-     OpenSSL_add_all_digests();
++
+ #ifndef OPENSSL_VERSION_1_1
+     /* Load all digest algorithms and initialize cpuid */
+     OPENSSL_add_all_algorithms_noconf();
      ERR_load_crypto_strings();
+ #endif
  
 -    /* TODO build EVP_functions openssl_* entries dynamically based
 -     * on what hashes are supported rather than listing many
